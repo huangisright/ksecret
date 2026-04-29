@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>閩南建築與僑鄉記憶：【出洋客的家書】</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #1a100c;
+      background-image: linear-gradient(rgba(10, 6, 4, 0.7), rgba(10, 6, 4, 0.85)), url('bg_minnan_brick.png');
+      background-size: cover;
+      background-position: center;
+      color: #d4c4a8;
+      font-family: 'Noto Serif TC', serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 28px;
+      color: #e8d5a6;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      letter-spacing: 4px;
+      border-bottom: 1px solid rgba(232, 213, 166, 0.2);
+      background: rgba(0,0,0,0.3);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .game-container {
+      display: flex;
+      flex: 1;
+      padding: 40px;
+      gap: 60px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .left-panel {
+      flex: 0 0 auto;
+    }
+
+    .right-panel {
+      flex: 0 0 350px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* ====== Letter Paper Styling ====== */
+    .letter-paper {
+      background-color: #f4e4c1;
+      background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.05"/></svg>');
+      padding: 40px;
+      box-shadow: 10px 10px 30px rgba(0,0,0,0.8), inset 0 0 40px rgba(139, 69, 19, 0.2);
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .letter-paper::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      bottom: 40px;
+      left: 40px;
+      right: 40px;
+      background-image: repeating-linear-gradient(to left, transparent, transparent 39px, rgba(200, 50, 50, 0.4) 39px, rgba(200, 50, 50, 0.4) 40px);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .letter-grid {
+      display: grid;
+      grid-template-rows: repeat(9, 40px);
+      grid-auto-flow: column;
+      direction: rtl;
+      width: max-content;
+      position: relative;
+      z-index: 2;
+    }
+
+    .char {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #3e2b19;
+      user-select: none;
+    }
+
+    /* ====== Blueprint Styling ====== */
+    .blueprint {
+      position: absolute;
+      width: 320px;
+      height: 360px;
+      cursor: grab;
+      filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.8));
+      z-index: 100;
+    }
+
+    .blueprint:active {
+      cursor: grabbing;
+    }
+
+    /* ====== Story Context ====== */
+    .story-context {
+      background: rgba(255,255,255,0.05);
+      border-left: 4px solid #8b7355;
+      padding: 20px;
+      font-size: 15px;
+      line-height: 1.8;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      color: #d4c4a8;
+    }
+    .story-context h3 {
+      margin-top: 0;
+      color: #d4af37;
+      letter-spacing: 2px;
+      font-size: 18px;
+    }
+
+    /* ====== Safe Container ====== */
+    .safe-container {
+      background: linear-gradient(135deg, #4a3b2c, #2a1f16);
+      border: 4px solid #8b7355;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 5px 5px 15px rgba(0,0,0,0.6);
+      position: relative;
+    }
+
+    .safe-container h3 {
+      margin-top: 0;
+      color: #d4af37;
+      letter-spacing: 2px;
+      border-bottom: 1px solid #d4af37;
+      padding-bottom: 10px;
+    }
+
+    .dials {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .dial {
+      width: 50px;
+      height: 70px;
+      background: #111;
+      color: #fff;
+      font-size: 36px;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      border: 2px solid #555;
+      box-shadow: inset 0 5px 10px rgba(0,0,0,0.8);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s, background 0.2s;
+    }
+
+    .dial:active {
+      transform: translateY(2px);
+      background: #222;
+    }
+
+    .unlock-btn {
+      background: linear-gradient(to bottom, #d4af37, #aa7c11);
+      border: none;
+      padding: 10px 40px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+      transition: all 0.2s;
+      letter-spacing: 4px;
+    }
+
+    .unlock-btn:hover {
+      background: linear-gradient(to bottom, #f4cf57, #ca9c31);
+    }
+
+    .unlock-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    #safe-msg {
+      margin-top: 15px;
+      height: 20px;
+      font-size: 15px;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    .shake {
+      animation: shake 0.4s;
+    }
+
+    /* ====== Success Overlay ====== */
+    #success-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 6, 4, 0.95);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #d4af37;
+      text-align: center;
+    }
+
+    #success-overlay h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px #d4af37;
+      letter-spacing: 4px;
+    }
+
+    #success-overlay p {
+      font-size: 22px;
+      max-width: 600px;
+      line-height: 1.8;
+      color: #e8d5a6;
+    }
+
+    .btn-restart {
+      margin-top: 40px;
+      background: transparent;
+      border: 2px solid #d4af37;
+      color: #d4af37;
+      padding: 12px 40px;
+      font-size: 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: all 0.3s;
+      letter-spacing: 2px;
+    }
+    .btn-restart:hover {
+      background: #d4af37;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <header>閩南建築與僑鄉記憶：【出洋客的家書】</header>
+
+  <div class="game-container">
+    <div class="left-panel">
+      <div class="letter-paper">
+        <div class="letter-grid" id="letter-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+    
+    <div class="right-panel">
+      <div class="story-context">
+        <h3>【落番與僑鄉】</h3>
+        <p>19世紀中葉至20世紀初，許多金門先輩為了生計，離鄉背井「落番」到南洋打拼。他們做著最辛苦的勞力工作，省吃儉用，將血汗錢化作「僑匯」與「家書」寄回故里。</p>
+        <p>這些僑匯不僅養活了家鄉的妻兒老小，更有一大部分被用來光宗耀祖——在家鄉起造堅固華麗的閩南雙落大厝或洋樓。每一封番仔信，都承載著出洋客對故鄉深深的眷戀與責任。</p>
+      </div>
+
+      <div class="safe-container">
+        <h3>僑匯櫃密碼鎖</h3>
+        <div class="dials">
+          <div class="dial" onclick="spin(0)" id="dial-0">0</div>
+          <div class="dial" onclick="spin(1)" id="dial-1">0</div>
+          <div class="dial" onclick="spin(2)" id="dial-2">0</div>
+          <div class="dial" onclick="spin(3)" id="dial-3">0</div>
+        </div>
+        <button class="unlock-btn" onclick="checkPassword()">開鎖</button>
+        <div id="safe-msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- The Draggable Blueprint SVG -->
+  <div id="blueprint" class="blueprint">
+    <svg width="320" height="360" viewBox="0 0 320 360" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <mask id="blueprint-mask">
+          <rect x="0" y="0" width="320" height="360" fill="white" />
+          <rect x="280" y="160" width="40" height="40" fill="black" rx="4" ry="4"/> <!-- 壹 -->
+          <rect x="240" y="40" width="40" height="40" fill="black" rx="4" ry="4"/>  <!-- 參 -->
+          <rect x="200" y="320" width="40" height="40" fill="black" rx="4" ry="4"/> <!-- 捌 -->
+          <rect x="40" y="160" width="40" height="40" fill="black" rx="4" ry="4"/>   <!-- 伍 -->
+        </mask>
+        <!-- Blueprint paper texture -->
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        </pattern>
+      </defs>
+
+      <!-- Base colored paper -->
+      <rect x="0" y="0" width="320" height="360" fill="rgba(30, 58, 95, 0.5)" mask="url(#blueprint-mask)" />
+      <rect x="0" y="0" width="320" height="360" fill="url(#grid)" mask="url(#blueprint-mask)" />
+
+
+
+      <!-- Building Walls (White lines) -->
+      <!-- Outer perimeter -->
+      <rect x="4" y="4" width="312" height="352" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="4" mask="url(#blueprint-mask)"/>
+      
+      <!-- Inner walls forming Siheyuan -->
+      <!-- Main Hall separator -->
+      <line x1="160" y1="4" x2="160" y2="356" stroke="rgba(255,255,255,0.8)" stroke-width="3" mask="url(#blueprint-mask)"/>
+      <!-- Front Hall separator -->
+      <line x1="280" y1="4" x2="280" y2="356" stroke="rgba(255,255,255,0.8)" stroke-width="3" mask="url(#blueprint-mask)"/>
+      
+      <!-- Top and Bottom Wing separators (between wings and courtyard) -->
+      <line x1="160" y1="80" x2="280" y2="80" stroke="rgba(255,255,255,0.8)" stroke-width="3" mask="url(#blueprint-mask)"/>
+      <line x1="160" y1="280" x2="280" y2="280" stroke="rgba(255,255,255,0.8)" stroke-width="3" mask="url(#blueprint-mask)"/>
+
+      <!-- Door markers -->
+      <!-- Main door to Main Hall -->
+      <rect x="156" y="150" width="8" height="60" fill="rgba(30, 58, 95, 0.5)" stroke="rgba(255,255,255,0.8)" stroke-width="2" mask="url(#blueprint-mask)"/>
+      <!-- Outer Gate -->
+      <rect x="316" y="150" width="8" height="60" fill="rgba(30, 58, 95, 0.5)" stroke="rgba(255,255,255,0.8)" stroke-width="2" mask="url(#blueprint-mask)"/>
+
+      <!-- Labels for Siheyuan parts -->
+      <text x="100" y="140" fill="rgba(255,255,255,0.5)" font-size="24" writing-mode="vertical-rl" letter-spacing="20">大厝</text>
+      <text x="300" y="240" fill="rgba(255,255,255,0.6)" font-size="20" writing-mode="vertical-rl" letter-spacing="10">前落</text>
+      <text x="220" y="160" fill="rgba(255,255,255,0.6)" font-size="24" writing-mode="vertical-rl" letter-spacing="15">天井</text>
+
+      <text x="200" y="48" fill="rgba(255,255,255,0.6)" font-size="20" text-anchor="middle">左廂</text>
+      <text x="250" y="340" fill="rgba(255,255,255,0.6)" font-size="20" text-anchor="middle">右廂</text>
+
+      <!-- Hole outlines -->
+      <rect x="280" y="160" width="40" height="40" fill="none" stroke="#ff5555" stroke-width="2" rx="4" ry="4"/>
+      <rect x="240" y="40" width="40" height="40" fill="none" stroke="#ff5555" stroke-width="2" rx="4" ry="4"/>
+      <rect x="200" y="320" width="40" height="40" fill="none" stroke="#ff5555" stroke-width="2" rx="4" ry="4"/>
+      <rect x="40" y="160" width="40" height="40" fill="none" stroke="#ff5555" stroke-width="2" rx="4" ry="4"/>
+    </svg>
+  </div>
+
+  <!-- Success Overlay -->
+  <div id="success-overlay">
+    <h1>解鎖成功！</h1>
+    <p>您已成功打開僑匯櫃，裡面放著下南洋打拼的先輩寄回來的血汗錢。<br>這筆錢將用於修葺祖厝，也象徵著出洋客對故鄉與家族的深切牽掛與責任。</p>
+    <div style="margin: 30px 0; padding: 15px 30px; border: 2px dashed #d4af37; border-radius: 10px; background: rgba(0,0,0,0.5);">
+      <p style="margin: 0; font-size: 20px; color: #f4cf57;">【獲得重要線索】<br>在保險箱底層，你發現了一組數字：<span style="font-size: 32px; font-weight: bold; letter-spacing: 5px;">1958</span></p>
+    </div>
+    <button class="btn-restart" onclick="location.reload()">重新體驗</button>
+  </div>
+
+  <script>
+    // 1. Generate Letter Content
+    const textArray = [
+      "門","對","南","山","壹","心","向","佛","，",
+      "今","參","詳","欲","修","葺","祖","厝","，",
+      "寄","回","匯","銀","共","計","千","百","捌",
+      "離","鄉","背","井","已","數","十","載","。",
+      "吾","家","位","於","大","厝","之","落","，",
+      "承","載","世","代","先","祖","期","盼","。",
+      "望","兒","孫","能","伍","穀","豐","登","，",
+      "勤","儉","持","家","傳","承","百","代","。",
+      "勿","忘","故","里","，","夙","夜","匪","懈",
+      "。","切","勿","獨","斷","，","遇","事","需",
+      "多","與","宗","族","長","老","商","量","。",
+      "父","字","。","　","　","　","　","　","　"
+    ];
+
+    const grid = document.getElementById('letter-grid');
+    textArray.forEach(char => {
+      const cell = document.createElement('div');
+      cell.className = 'char';
+      cell.innerText = char;
+      grid.appendChild(cell);
+    });
+
+    // 2. Blueprint Drag and Drop Logic
+    const blueprint = document.getElementById('blueprint');
+    let isDragging = false;
+    let startX, startY, initialLeft, initialTop;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Initial positioning (on the right side)
+      const rpRect = document.querySelector('.right-panel').getBoundingClientRect();
+      blueprint.style.left = (window.innerWidth - 380) + 'px';
+      blueprint.style.top = '100px';
+
+      blueprint.addEventListener('mousedown', startDrag);
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('mouseup', stopDrag);
+
+      blueprint.addEventListener('touchstart', startDrag, {passive: false});
+      document.addEventListener('touchmove', drag, {passive: false});
+      document.addEventListener('touchend', stopDrag);
+    });
+
+    function startDrag(e) {
+      if (e.target.tagName.toLowerCase() === 'button' || e.target.classList.contains('dial')) return;
+      isDragging = true;
+      const clientX = e.clientX || e.touches[0].clientX;
+      const clientY = e.clientY || e.touches[0].clientY;
+      startX = clientX;
+      startY = clientY;
+      initialLeft = parseFloat(blueprint.style.left) || 0;
+      initialTop = parseFloat(blueprint.style.top) || 0;
+      blueprint.style.transition = ''; // Remove snap transition if dragging again
+    }
+
+    function drag(e) {
+      if (!isDragging) return;
+      e.preventDefault(); // Prevent scrolling on mobile
+      const clientX = e.clientX || e.touches[0].clientX;
+      const clientY = e.clientY || e.touches[0].clientY;
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+      blueprint.style.left = (initialLeft + dx) + 'px';
+      blueprint.style.top = (initialTop + dy) + 'px';
+    }
+
+    function stopDrag() {
+      if (!isDragging) return;
+      isDragging = false;
+
+      // 磁吸效果已依需求移除
+    }
+
+    // 3. Safe Password Logic
+    let digits = [0, 0, 0, 0];
+    function spin(idx) {
+      digits[idx] = (digits[idx] + 1) % 10;
+      document.getElementById('dial-' + idx).innerText = digits[idx];
+    }
+
+    function checkPassword() {
+      const pwd = digits.join('');
+      const msg = document.getElementById('safe-msg');
+      if (pwd === '1385') {
+        msg.style.color = '#4CAF50';
+        msg.innerText = "喀嚓！密碼正確。";
+        setTimeout(() => {
+          document.getElementById('success-overlay').style.display = 'flex';
+        }, 800);
+      } else {
+        msg.style.color = '#ff5555';
+        msg.innerText = "密碼錯誤，請再試一次。";
+        const safe = document.querySelector('.safe-container');
+        safe.classList.remove('shake');
+        void safe.offsetWidth; // trigger reflow
+        safe.classList.add('shake');
+      }
+    }
+  </script>
+</body>
+</html>

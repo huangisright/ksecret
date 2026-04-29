@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>閩南建築與僑鄉記憶：【落番航海圖】</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #1a100c;
+      background-image: linear-gradient(rgba(10, 6, 4, 0.7), rgba(10, 6, 4, 0.85)), url('bg_minnan_brick.png');
+      background-size: cover;
+      background-position: center;
+      color: #d4c4a8;
+      font-family: 'Noto Serif TC', serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 28px;
+      color: #e8d5a6;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      letter-spacing: 4px;
+      border-bottom: 1px solid rgba(232, 213, 166, 0.2);
+      background: rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+
+    .game-container {
+      display: flex;
+      flex: 1;
+      padding: 30px;
+      gap: 40px;
+      justify-content: center;
+      align-items: flex-start;
+      max-width: 1200px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    /* ====== Left Panel: Diary ====== */
+    .left-panel {
+      flex: 1;
+      min-width: 450px;
+      max-width: 550px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .diary-paper {
+      background: #e6d5b8;
+      padding: 30px;
+      border-radius: 4px;
+      box-shadow: inset 0 0 50px rgba(139, 69, 19, 0.2), 5px 5px 15px rgba(0,0,0,0.6);
+      position: relative;
+      background-image: 
+        radial-gradient(circle at 100% 150%, #d4b88b 24%, white 25%, white 28%, #d4b88b 29%, #d4b88b 36%, white 36%, white 40%, transparent 40%, transparent),
+        radial-gradient(circle at 0 150%, #d4b88b 24%, white 25%, white 28%, #d4b88b 29%, #d4b88b 36%, white 36%, white 40%, transparent 40%, transparent),
+        radial-gradient(circle at 50% 100%, white 10%, #d4b88b 11%, #d4b88b 23%, white 24%, white 30%, #d4b88b 31%, #d4b88b 43%, white 44%, white 50%, #d4b88b 51%, #d4b88b 63%, white 64%, white 71%, transparent 71%, transparent);
+      background-size: 20px 20px;
+      background-blend-mode: multiply;
+      color: #3b2f2f;
+    }
+    
+    .diary-paper::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(rgba(230, 213, 184, 0.8), rgba(230, 213, 184, 0.8));
+      pointer-events: none;
+    }
+
+    .diary-content {
+      position: relative;
+      z-index: 1;
+      writing-mode: vertical-rl;
+      font-size: 18px;
+      line-height: 1.8;
+      height: 550px;
+      letter-spacing: 4px;
+      font-family: 'DFKai-sb', 'Kaiti TC', 'Noto Serif TC', serif;
+      border-left: 2px solid rgba(139, 69, 19, 0.3);
+      padding-left: 10px;
+      padding-right: 10px;
+      margin: 0 auto;
+      overflow: visible;
+    }
+
+    .story-context {
+      background: rgba(255,255,255,0.05);
+      border-left: 4px solid #8b7355;
+      padding: 20px;
+      font-size: 15px;
+      line-height: 1.8;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      color: #d4c4a8;
+    }
+    .story-context h3 {
+      margin-top: 0;
+      color: #d4af37;
+      letter-spacing: 2px;
+      font-size: 18px;
+    }
+
+    .controls {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .btn-reset {
+      background: #8b3a3a;
+      color: white;
+      border: 1px solid #c97e7e;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-family: 'Noto Serif TC', serif;
+      cursor: pointer;
+      border-radius: 4px;
+      letter-spacing: 2px;
+      transition: background 0.3s;
+    }
+    .btn-reset:hover {
+      background: #a54646;
+    }
+
+    /* ====== Right Panel: Map ====== */
+    .right-panel {
+      flex: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .map-container {
+      width: 650px;
+      height: 600px;
+      background-image: url('nanyang_map_bg.png');
+      background-size: cover;
+      background-position: center;
+      border: 10px solid #4a3b2c;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3); /* Darken map slightly */
+      pointer-events: none;
+    }
+
+    #map-svg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: auto;
+    }
+
+    .port-node {
+      fill: rgba(255, 215, 0, 0.2);
+      stroke: #d4af37;
+      stroke-width: 2;
+      cursor: pointer;
+      transition: fill 0.3s, stroke-width 0.3s;
+    }
+    .port-node:hover {
+      fill: rgba(255, 215, 0, 0.6);
+      stroke-width: 3;
+    }
+    .port-node.active {
+      fill: #d4af37;
+      stroke: #fff;
+    }
+
+    .port-label {
+      fill: #e8d5a6;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 16px;
+      font-weight: bold;
+      pointer-events: none;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9);
+    }
+
+    .route-path {
+      fill: none;
+      stroke: #d4af37;
+      stroke-width: 4;
+      stroke-dasharray: 8 4;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .ship {
+      cursor: grab;
+      filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.8));
+    }
+    .ship:active {
+      cursor: grabbing;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-10px, 0); }
+      40% { transform: translate(10px, 0); }
+      60% { transform: translate(-10px, 0); }
+      80% { transform: translate(10px, 0); }
+    }
+    .shake-error {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    /* ====== Success Overlay ====== */
+    #success-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    #success-overlay.visible {
+      display: flex;
+      opacity: 1;
+    }
+
+    #success-overlay h1 {
+      color: #d4af37;
+      font-size: 48px;
+      letter-spacing: 10px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    }
+
+    #success-overlay p {
+      color: #e8d5a6;
+      font-size: 18px;
+      line-height: 2;
+      max-width: 600px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>閩南建築與僑鄉記憶：【落番航路】</header>
+
+  <div class="game-container">
+    <div class="left-panel">
+      <div class="diary-paper">
+        <div class="diary-content">
+道光中葉，家鄉連年欠收，余被迫簽下賣身契，踏上「落番」之途。<br><br>
+含淚別故土，啟碇於料羅。渡海西行，先至鷺島客棧，與眾多「豬仔」同船換乘洋船。沿海南下，泊於香江口岸補給淡水，船艙悶熱難當。<br><br>
+受商號之命，先赴呂宋交割絲綢，再轉往西貢採辦米糧。南下獅城卸貨後，越過赤道，遠赴吧城採購香料。滿載北返時突遇颶風，折損桅杆，隨波漂流，幸抵檳榔嶼避險修船，方得苟活。<br><br>
+半月後重新啟航，順風南下，終抵麻六甲。至此方知，此地已有吾鄉先輩安息於三寶山，余遂留此為傭，始作落番之業，立足異邦。
+        </div>
+      </div>
+      
+      <div class="controls">
+        <button class="btn-reset" onclick="resetGame()">收起風帆 (重置軌跡)</button>
+      </div>
+    </div>
+    
+    <div class="right-panel">
+      <div class="map-container" id="map-container">
+        <div class="map-overlay"></div>
+        <svg id="map-svg" viewBox="0 0 650 600" xmlns="http://www.w3.org/2000/svg">
+          <!-- Dynamic Paths will be drawn here -->
+          <g id="paths-layer"></g>
+
+          <!-- Ports (Nodes) -->
+          <!-- P0: 金門 (Kinmen) -->
+          <circle class="port-node" id="port-P0" cx="485" cy="60" r="15" data-id="P0"/>
+          <text class="port-label" x="510" y="65">料羅</text>
+
+          <!-- P1: 廈門 (Xiamen) -->
+          <circle class="port-node" id="port-P1" cx="430" cy="70" r="15" data-id="P1"/>
+          <text class="port-label" x="400" y="55">鷺島</text>
+
+          <!-- P2: 香港 (Hong Kong) -->
+          <circle class="port-node" id="port-P2" cx="390" cy="110" r="15" data-id="P2"/>
+          <text class="port-label" x="415" y="115">香江</text>
+          
+          <!-- P3: 呂宋 (Luzon) -->
+          <circle class="port-node" id="port-P3" cx="580" cy="220" r="15" data-id="P3"/>
+          <text class="port-label" x="605" y="225">呂宋</text>
+
+          <!-- P4: 西貢 (Saigon) -->
+          <circle class="port-node" id="port-P4" cx="250" cy="350" r="15" data-id="P4"/>
+          <text class="port-label" x="200" y="355">西貢</text>
+
+          <!-- P5: 檳城 (Penang) -->
+          <circle class="port-node" id="port-P5" cx="120" cy="420" r="15" data-id="P5"/>
+          <text class="port-label" x="50" y="425">檳榔嶼</text>
+
+          <!-- P6: 麻六甲 (Malacca) -->
+          <circle class="port-node" id="port-P6" cx="150" cy="480" r="15" data-id="P6"/>
+          <text class="port-label" x="70" y="485">麻六甲</text>
+
+          <!-- P7: 星洲 (Singapore) -->
+          <circle class="port-node" id="port-P7" cx="200" cy="540" r="15" data-id="P7"/>
+          <text class="port-label" x="225" y="545">獅城</text>
+
+          <!-- P8: 吧城 (Batavia) -->
+          <circle class="port-node" id="port-P8" cx="280" cy="580" r="15" data-id="P8"/>
+          <text class="port-label" x="305" y="585">吧城</text>
+
+          <!-- Draggable Ship -->
+          <g id="ship" class="ship" transform="translate(485, 60)">
+            <circle cx="0" cy="0" r="22" fill="#8b3a3a" stroke="#fff" stroke-width="2"/>
+            <path d="M -10 5 L 10 5 L 15 -5 L -15 -5 Z" fill="#d4af37"/>
+            <path d="M 0 5 L 0 -15" stroke="#fff" stroke-width="2"/>
+            <path d="M 0 -15 L 10 -5 L 0 -5 Z" fill="#fff"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div id="success-overlay">
+    <h1>航線解鎖成功！</h1>
+    <p>商船歷經千辛萬苦，終於抵達麻六甲。<br>隨著正確的歷史航線被繪出，暗格發出「喀」的一聲彈開了。</p>
+    <div style="margin: 30px 0; padding: 15px 30px; border: 2px dashed #d4af37; border-radius: 10px; background: rgba(0,0,0,0.5);">
+      <p style="margin: 0; font-size: 20px; color: #f4cf57;">【獲得重要線索】<br>暗格內有一張泛黃的拓印紙，上面記錄著麻六甲三寶山一座金門先輩古墓的立碑年份（乾隆37年）：<br><span style="font-size: 32px; font-weight: bold; letter-spacing: 5px;">1772</span></p>
+    </div>
+    <button class="btn-reset" onclick="location.reload()" style="font-size: 20px; padding: 15px 30px;">重新體驗</button>
+  </div>
+
+  <script>
+    const svg = document.getElementById('map-svg');
+    const ship = document.getElementById('ship');
+    const pathsLayer = document.getElementById('paths-layer');
+    const mapContainer = document.getElementById('map-container');
+    
+    // Node coordinates definition
+    const nodes = {
+      'P0': {x: 485, y: 60},
+      'P1': {x: 430, y: 70},
+      'P2': {x: 390, y: 110},
+      'P3': {x: 580, y: 220},
+      'P4': {x: 250, y: 350},
+      'P5': {x: 120, y: 420},
+      'P6': {x: 150, y: 480},
+      'P7': {x: 200, y: 540},
+      'P8': {x: 280, y: 580}
+    };
+
+    // The correct sequence to solve the puzzle
+    // 料羅(P0) -> 鷺島(P1) -> 香江(P2) -> 呂宋(P3) -> 西貢(P4) -> 獅城(P7) -> 吧城(P8) -> 檳榔嶼(P5) -> 麻六甲(P6)
+    const targetPath = ['P0', 'P1', 'P2', 'P3', 'P4', 'P7', 'P8', 'P5', 'P6'];
+    
+    let currentPath = ['P0'];
+    let isDragging = false;
+    let shipPos = { x: 485, y: 60 };
+
+    // --- Drag Logic ---
+    ship.addEventListener('mousedown', startDrag);
+    ship.addEventListener('touchstart', startDrag, {passive: false});
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag, {passive: false});
+    document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('touchend', stopDrag);
+
+    function getMouseCoords(e) {
+      let clientX = e.clientX;
+      let clientY = e.clientY;
+      if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      }
+      
+      const pt = svg.createSVGPoint();
+      pt.x = clientX;
+      pt.y = clientY;
+      const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+      return { x: svgP.x, y: svgP.y };
+    }
+
+    function startDrag(e) {
+      isDragging = true;
+      ship.style.transition = '';
+    }
+
+    function drag(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const coords = getMouseCoords(e);
+      shipPos.x = coords.x;
+      shipPos.y = coords.y;
+      ship.setAttribute('transform', `translate(${shipPos.x}, ${shipPos.y})`);
+      
+      // Highlight nearby nodes
+      for (let id in nodes) {
+        const node = nodes[id];
+        const dist = Math.hypot(node.x - shipPos.x, node.y - shipPos.y);
+        const circle = document.getElementById('port-' + id);
+        if (dist < 40) {
+          circle.classList.add('active');
+        } else {
+          if (!currentPath.includes(id)) {
+            circle.classList.remove('active');
+          }
+        }
+      }
+    }
+
+    function stopDrag(e) {
+      if (!isDragging) return;
+      isDragging = false;
+
+      // Check if dropped near any node
+      let snapped = false;
+      for (let id in nodes) {
+        const node = nodes[id];
+        const dist = Math.hypot(node.x - shipPos.x, node.y - shipPos.y);
+        
+        if (dist < 40) {
+          // Snap to this node
+          ship.style.transition = 'transform 0.2s';
+          shipPos.x = node.x;
+          shipPos.y = node.y;
+          ship.setAttribute('transform', `translate(${shipPos.x}, ${shipPos.y})`);
+          snapped = true;
+          
+          handleNodeReached(id);
+          break;
+        }
+      }
+
+      // If didn't snap, return to the last known valid node in path
+      if (!snapped) {
+        const lastNodeId = currentPath[currentPath.length - 1];
+        const lastNode = nodes[lastNodeId];
+        ship.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
+        shipPos.x = lastNode.x;
+        shipPos.y = lastNode.y;
+        ship.setAttribute('transform', `translate(${shipPos.x}, ${shipPos.y})`);
+      }
+    }
+
+    function handleNodeReached(id) {
+      const lastNodeId = currentPath[currentPath.length - 1];
+      
+      // If dropping on the exact same node we are currently at, do nothing
+      if (id === lastNodeId) return;
+
+      // Add to path
+      currentPath.push(id);
+      document.getElementById('port-' + id).classList.add('active');
+      
+      // Draw the path line
+      drawPaths();
+
+      // Check validation if we reached the target length
+      if (currentPath.length === targetPath.length) {
+        validatePath();
+      } else if (currentPath.length > targetPath.length) {
+         // Auto fail if too long
+         failSequence();
+      }
+    }
+
+    function drawPaths() {
+      pathsLayer.innerHTML = '';
+      for (let i = 0; i < currentPath.length - 1; i++) {
+        const n1 = nodes[currentPath[i]];
+        const n2 = nodes[currentPath[i+1]];
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", n1.x);
+        line.setAttribute("y1", n1.y);
+        line.setAttribute("x2", n2.x);
+        line.setAttribute("y2", n2.y);
+        line.setAttribute("class", "route-path");
+        pathsLayer.appendChild(line);
+      }
+    }
+
+    function validatePath() {
+      let isCorrect = true;
+      for (let i = 0; i < targetPath.length; i++) {
+        if (currentPath[i] !== targetPath[i]) {
+          isCorrect = false;
+          break;
+        }
+      }
+
+      if (isCorrect) {
+        // Success
+        setTimeout(() => {
+          document.getElementById('success-overlay').classList.add('visible');
+        }, 500);
+      } else {
+        failSequence();
+      }
+    }
+
+    function failSequence() {
+      // Shake effect
+      mapContainer.classList.add('shake-error');
+      setTimeout(() => {
+        mapContainer.classList.remove('shake-error');
+        resetGame();
+      }, 600);
+    }
+
+    function resetGame() {
+      currentPath = ['P0'];
+      
+      // Reset ship
+      ship.style.transition = 'transform 0.5s ease-in-out';
+      shipPos.x = nodes['P0'].x;
+      shipPos.y = nodes['P0'].y;
+      ship.setAttribute('transform', `translate(${shipPos.x}, ${shipPos.y})`);
+      
+      // Reset ports
+      const ports = document.querySelectorAll('.port-node');
+      ports.forEach(p => {
+        if(p.id !== 'port-P0') p.classList.remove('active');
+      });
+      document.getElementById('port-P0').classList.add('active');
+
+      // Clear lines
+      pathsLayer.innerHTML = '';
+    }
+
+    // Initialize
+    document.getElementById('port-P0').classList.add('active');
+
+  </script>
+</body>
+</html>
