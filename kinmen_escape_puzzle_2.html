@@ -31,6 +31,27 @@
       border-bottom: 1px solid rgba(232, 213, 166, 0.2);
       background: rgba(0,0,0,0.3);
       flex-shrink: 0;
+      position: relative;
+    }
+
+    .btn-home {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #d4af37;
+      text-decoration: none;
+      font-size: 16px;
+      border: 1px solid #8b7355;
+      padding: 5px 15px;
+      border-radius: 5px;
+      background: rgba(0,0,0,0.5);
+      transition: all 0.3s;
+      letter-spacing: 2px;
+    }
+    .btn-home:hover {
+      background: #d4af37;
+      color: #000;
     }
 
     .game-container {
@@ -281,7 +302,10 @@
 </head>
 <body>
 
-  <header>閩南建築與僑鄉記憶：【落番航路】</header>
+  <header>
+    <a href="index.html" class="btn-home">⟵ 返回</a>
+    閩南建築與僑鄉記憶：【落番航路】
+  </header>
 
   <div class="game-container">
     <div class="left-panel">

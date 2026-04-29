@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>閩南建築與僑鄉記憶：【三寶山古墓】</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #1a100c;
+      background-image: linear-gradient(rgba(10, 6, 4, 0.8), rgba(10, 6, 4, 0.95)), url('bg_minnan_brick.png');
+      background-size: cover;
+      background-position: center;
+      color: #d4c4a8;
+      font-family: 'Noto Serif TC', serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 28px;
+      color: #e8d5a6;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      letter-spacing: 4px;
+      border-bottom: 1px solid rgba(232, 213, 166, 0.2);
+      background: rgba(0,0,0,0.3);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .btn-home {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #d4af37;
+      text-decoration: none;
+      font-size: 16px;
+      border: 1px solid #8b7355;
+      padding: 5px 15px;
+      border-radius: 5px;
+      background: rgba(0,0,0,0.5);
+      transition: all 0.3s;
+      letter-spacing: 2px;
+      z-index: 100;
+    }
+    .btn-home:hover {
+      background: #d4af37;
+      color: #000;
+    }
+
+    .game-container {
+      display: flex;
+      flex: 1;
+      padding: 30px;
+      gap: 40px;
+      justify-content: center;
+      align-items: stretch;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ====== Left Panel: Story & Safe ====== */
+    .left-panel {
+      flex: 0 0 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .story-context {
+      background: rgba(255,255,255,0.05);
+      border-left: 4px solid #8b7355;
+      padding: 20px;
+      font-size: 16px;
+      line-height: 1.8;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      color: #d4c4a8;
+    }
+    .story-context h3 {
+      margin-top: 0;
+      color: #d4af37;
+      letter-spacing: 2px;
+      font-size: 20px;
+    }
+
+    .safe-container {
+      background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+      border: 4px solid #4a4a4a;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 5px 5px 15px rgba(0,0,0,0.6);
+      opacity: 0.5;
+      pointer-events: none;
+      transition: opacity 1s;
+    }
+
+    .safe-container.active {
+      opacity: 1;
+      pointer-events: auto;
+      border-color: #d4af37;
+      box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.2), 5px 5px 15px rgba(0,0,0,0.6);
+    }
+
+    .safe-container h3 {
+      margin-top: 0;
+      color: #777;
+      letter-spacing: 2px;
+      border-bottom: 1px solid #444;
+      padding-bottom: 10px;
+      transition: color 1s;
+    }
+    .safe-container.active h3 {
+      color: #d4af37;
+      border-bottom-color: #d4af37;
+    }
+
+    .dials {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .dial {
+      width: 50px;
+      height: 70px;
+      background: #000;
+      color: #fff;
+      font-size: 36px;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      border: 2px solid #333;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s;
+    }
+    .safe-container.active .dial {
+      border-color: #d4af37;
+      background: #111;
+    }
+    .dial:active {
+      transform: translateY(2px);
+    }
+
+    .unlock-btn {
+      background: #333;
+      border: none;
+      padding: 10px 40px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #666;
+      border-radius: 5px;
+      transition: all 0.3s;
+      letter-spacing: 4px;
+    }
+    .safe-container.active .unlock-btn {
+      background: linear-gradient(to bottom, #d4af37, #aa7c11);
+      color: #000;
+      cursor: pointer;
+    }
+    .safe-container.active .unlock-btn:hover {
+      background: linear-gradient(to bottom, #f4cf57, #ca9c31);
+    }
+
+    #safe-msg {
+      margin-top: 15px;
+      height: 20px;
+      font-size: 15px;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    /* ====== Right Panel: Puzzle Area ====== */
+    .right-panel {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px dashed #554433;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .instruction {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      color: #8b7355;
+      font-size: 18px;
+      pointer-events: none;
+      letter-spacing: 2px;
+    }
+
+    /* Target Silhouette */
+    .target-silhouette {
+      fill: rgba(0, 0, 0, 0.6);
+      stroke: rgba(212, 175, 55, 0.3);
+      stroke-width: 2;
+      stroke-dasharray: 5, 5;
+    }
+
+    /* Shards */
+    .shard {
+      fill: #5a5245;
+      stroke: #3a3225;
+      stroke-width: 2;
+      cursor: grab;
+      filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.8));
+      transition: fill 0.3s, stroke 0.3s, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); /* Transform transition for snapping */
+    }
+    .shard:hover {
+      fill: #6b6255;
+    }
+    .shard:active {
+      cursor: grabbing;
+      transition: fill 0.3s, stroke 0.3s; /* Remove transform transition while dragging */
+    }
+    .shard.snapped {
+      fill: #8b7d65;
+      stroke: #a89a7f;
+      stroke-width: 1;
+      cursor: default;
+      filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+    }
+
+    /* Tombstone Math Text */
+    #math-clue {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #d4af37;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+      font-size: 22px;
+      line-height: 2;
+      font-family: 'Noto Serif TC', serif;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 2s;
+      width: 280px;
+    }
+    #math-clue.visible {
+      opacity: 1;
+    }
+
+    .math-eq {
+      background: rgba(0,0,0,0.6);
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      margin: 10px 0;
+      letter-spacing: 2px;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+    .shake-error {
+      animation: shake 0.4s ease-in-out;
+    }
+
+    /* ====== Success Overlay ====== */
+    #success-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 6, 4, 0.95);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #d4af37;
+      text-align: center;
+    }
+    #success-overlay h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px #d4af37;
+      letter-spacing: 4px;
+    }
+    #success-overlay p {
+      font-size: 22px;
+      max-width: 600px;
+      line-height: 1.8;
+      color: #e8d5a6;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 900px) {
+      .game-container {
+        flex-direction: column;
+        padding: 15px;
+      }
+      .left-panel {
+        flex: auto;
+        width: 100%;
+      }
+      .right-panel {
+        height: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="btn-home">⟵ 返回</a>
+    閩南建築與僑鄉記憶：【三寶山古墓】
+  </header>
+
+  <div class="game-container">
+    <div class="left-panel">
+      <div class="story-context">
+        <h3>【幾何與代數的傳承】</h3>
+        <p>你帶著「1772」的線索，找到了麻六甲三寶山上的一座無名古墓。然而，墓碑卻碎裂成了五塊不規則的石板。</p>
+        <p>請在右側將這五塊石碑碎片重新拼湊完整（<b>點擊碎片可順時針旋轉 90 度，拖曳可移動</b>）。</p>
+        <p>當墓碑還原，先祖隱藏在碑文中的代數謎題將會浮現。解開方程式，才能打開墓前的機關匣。</p>
+      </div>
+
+      <div class="safe-container" id="safe-container">
+        <h3>先祖機關匣</h3>
+        <div class="dials">
+          <div class="dial" onclick="spin(0)" id="dial-0">0</div>
+          <div class="dial" onclick="spin(1)" id="dial-1">0</div>
+          <div class="dial" onclick="spin(2)" id="dial-2">0</div>
+          <div class="dial" onclick="spin(3)" id="dial-3">0</div>
+        </div>
+        <button class="unlock-btn" onclick="checkPassword()">開啟機關</button>
+        <div id="safe-msg"></div>
+      </div>
+    </div>
+    
+    <div class="right-panel" id="puzzle-area">
+      <div class="instruction">點擊旋轉 / 拖曳拼湊</div>
+      
+      <!-- The puzzle SVG -->
+      <svg width="100%" height="100%" id="puzzle-svg">
+        <!-- Center group for the target silhouette (300x450) -->
+        <g id="target-group" transform="translate(0, 0)">
+          <!-- Target silhouette -->
+          <polygon class="target-silhouette" points="50,0 250,0 300,50 300,450 0,450 0,50" />
+        </g>
+        
+        <!-- Shards group -->
+        <g id="shards-group"></g>
+      </svg>
+
+      <div id="math-clue">
+        <div style="font-size: 16px; color: #a89a7f; margin-bottom: 10px;">碑文浮現：</div>
+        <div class="math-eq">
+          X + Y = 17<br>
+          X - Y = 7
+        </div>
+        <div class="math-eq">
+          Z × W = 72<br>
+          Z ÷ W = 2
+        </div>
+        <div style="font-size: 16px; margin-top: 15px;">密碼依序為：<br>X (十位數)、Y (個位數)、Z (十位數)、W (個位數)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div id="success-overlay">
+    <h1>全系列通關！</h1>
+    <p>機關匣緩緩打開，裡面放著一本寫滿南洋貿易路線的古老帳冊，以及一封家書的下半部。</p>
+    <p>透過數學邏輯與幾何空間的推理，你成功還原了金門先輩「落番」的血淚史。<br>這份歷史記憶，將由你繼續傳承下去。</p>
+    <button class="btn-home" style="position: static; margin-top: 40px; transform: none; font-size: 20px; padding: 10px 30px;" onclick="location.href='index.html'">回到首頁</button>
+  </div>
+
+  <script>
+    const svg = document.getElementById('puzzle-svg');
+    const targetGroup = document.getElementById('target-group');
+    const shardsGroup = document.getElementById('shards-group');
+    const mathClue = document.getElementById('math-clue');
+    const safeContainer = document.getElementById('safe-container');
+    
+    // Tombstone polygon definition
+    // Bounding box: 300x450
+    // Center of bounding box is (150, 225)
+    
+    // Define the 5 shards using relative center points to make rotation easy.
+    // We will define them by their absolute points, compute their centroid, 
+    // and then apply transformations based on that centroid.
+    const shardDefs = [
+      { id: 1, points: "50,0 250,0 300,50 300,150 150,150 0,100 0,50" }, // Top
+      { id: 2, points: "0,100 150,150 150,300 0,250" }, // Mid-Left
+      { id: 3, points: "150,150 300,150 300,350 150,300" }, // Mid-Right
+      { id: 4, points: "0,250 150,300 150,450 0,450" }, // Bot-Left
+      { id: 5, points: "150,300 300,350 300,450 150,450" } // Bot-Right
+    ];
+
+    let snappedCount = 0;
+    const SNAP_TOLERANCE = 30; // pixels
+
+    // We need to wait for the container to have a size to center the target
+    let targetX = 0, targetY = 0;
+
+    function initPuzzle() {
+      const rect = svg.getBoundingClientRect();
+      // Center the target silhouette in the SVG
+      targetX = (rect.width - 300) / 2;
+      targetY = (rect.height - 450) / 2;
+      targetGroup.setAttribute('transform', `translate(${targetX}, ${targetY})`);
+
+      // Initialize shards
+      shardDefs.forEach((def, index) => {
+        const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        polygon.setAttribute("points", def.points);
+        polygon.setAttribute("class", "shard");
+        polygon.setAttribute("id", `shard-${def.id}`);
+        
+        // Random initial position around the center
+        const angle = (index / 5) * Math.PI * 2;
+        const radius = 250; // scatter radius
+        
+        const initX = targetX + Math.cos(angle) * radius;
+        const initY = targetY + Math.sin(angle) * radius;
+        
+        // Random initial rotation (0, 90, 180, 270)
+        const initRot = Math.floor(Math.random() * 4) * 90;
+
+        // Create a <g> to hold the shard and handle its transformations
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        
+        // Store state in the DOM element
+        g.dataset.id = def.id;
+        g.dataset.x = initX;
+        g.dataset.y = initY;
+        g.dataset.rot = initRot;
+        g.dataset.snapped = 'false';
+
+        // Set initial transform
+        // The rotation needs to happen around the center of the bounding box (150, 225)
+        updateTransform(g);
+
+        g.appendChild(polygon);
+        shardsGroup.appendChild(g);
+
+        // Event listeners
+        g.addEventListener('mousedown', handleDragStart);
+        g.addEventListener('touchstart', handleDragStart, {passive: false});
+      });
+      
+      // Position math clue in the center
+      mathClue.style.left = (rect.width / 2) + 'px';
+      mathClue.style.top = (rect.height / 2) + 'px';
+    }
+
+    function updateTransform(g) {
+      const x = parseFloat(g.dataset.x);
+      const y = parseFloat(g.dataset.y);
+      const rot = parseInt(g.dataset.rot);
+      // Translate to position, then rotate around the tombstone center (150, 225)
+      g.setAttribute('transform', `translate(${x}, ${y}) rotate(${rot}, 150, 225)`);
+    }
+
+    let draggingElement = null;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let initialX = 0;
+    let initialY = 0;
+    let hasMoved = false; // To distinguish between click (rotate) and drag (move)
+
+    function getMouseCoords(e) {
+      let clientX = e.clientX;
+      let clientY = e.clientY;
+      if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      }
+      return { x: clientX, y: clientY };
+    }
+
+    function handleDragStart(e) {
+      if (this.dataset.snapped === 'true') return;
+      e.preventDefault();
+      
+      draggingElement = this;
+      const coords = getMouseCoords(e);
+      dragStartX = coords.x;
+      dragStartY = coords.y;
+      initialX = parseFloat(this.dataset.x);
+      initialY = parseFloat(this.dataset.y);
+      hasMoved = false;
+
+      // Bring to front
+      shardsGroup.appendChild(draggingElement);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      if (!draggingElement) return;
+      e.preventDefault();
+      const coords = getMouseCoords(e);
+      const dx = coords.x - dragStartX;
+      const dy = coords.y - dragStartY;
+      
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        hasMoved = true;
+      }
+
+      if (hasMoved) {
+        draggingElement.dataset.x = initialX + dx;
+        draggingElement.dataset.y = initialY + dy;
+        updateTransform(draggingElement);
+      }
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!draggingElement) return;
+      e.preventDefault();
+      const coords = getMouseCoords(e);
+      const dx = coords.x - dragStartX;
+      const dy = coords.y - dragStartY;
+      
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        hasMoved = true;
+      }
+
+      if (hasMoved) {
+        draggingElement.dataset.x = initialX + dx;
+        draggingElement.dataset.y = initialY + dy;
+        updateTransform(draggingElement);
+      }
+    }, {passive: false});
+
+    document.addEventListener('mouseup', handleDragEnd);
+    document.addEventListener('touchend', handleDragEnd);
+
+    function handleDragEnd(e) {
+      if (!draggingElement) return;
+      
+      // If it was just a click, rotate it
+      if (!hasMoved) {
+        let rot = parseInt(draggingElement.dataset.rot);
+        rot = (rot + 90) % 360;
+        draggingElement.dataset.rot = rot;
+        updateTransform(draggingElement);
+      }
+      
+      // Check snapping
+      checkSnap(draggingElement);
+
+      draggingElement = null;
+    }
+
+    function checkSnap(g) {
+      const x = parseFloat(g.dataset.x);
+      const y = parseFloat(g.dataset.y);
+      const rot = parseInt(g.dataset.rot);
+
+      // Target position is targetX, targetY with 0 rotation
+      const dist = Math.hypot(x - targetX, y - targetY);
+
+      if (dist < SNAP_TOLERANCE && rot === 0) {
+        // Snapped!
+        g.dataset.x = targetX;
+        g.dataset.y = targetY;
+        g.dataset.snapped = 'true';
+        updateTransform(g);
+        
+        g.querySelector('polygon').classList.add('snapped');
+        snappedCount++;
+
+        if (snappedCount === 5) {
+          handlePuzzleComplete();
+        }
+      }
+    }
+
+    function handlePuzzleComplete() {
+      // Hide the target silhouette
+      targetGroup.style.display = 'none';
+      
+      // Show math clue
+      setTimeout(() => {
+        mathClue.classList.add('visible');
+      }, 500);
+
+      // Enable safe
+      setTimeout(() => {
+        safeContainer.classList.add('active');
+      }, 2000);
+    }
+
+    // --- Safe Logic ---
+    let digits = [0, 0, 0, 0];
+    function spin(idx) {
+      if (!safeContainer.classList.contains('active')) return;
+      digits[idx] = (digits[idx] + 1) % 10;
+      document.getElementById('dial-' + idx).innerText = digits[idx];
+    }
+
+    function checkPassword() {
+      // Math solution:
+      // X + Y = 17, X - Y = 7 => 2X = 24 => X = 12. So X is 12? Wait.
+      // If X is 12, Y is 5. 12 + 5 = 17, 12 - 5 = 7.
+      // The clue says: X (十位數), Y (個位數). This implies X is a single digit?
+      // Wait, "X (十位數)" means the first digit of the password is X!
+      // But X is 12! A single dial only goes 0-9.
+      // Ah! X=1, Y=2? No, X+Y=17. 9+8=17. 9-8=1.
+      // Let's adjust the equation in the logic to match 0-9 dials.
+      // Wait, the equation in the HTML says:
+      // X + Y = 17, X - Y = 7. Solution: X=12, Y=5. Dials can't be 12.
+      // Let me change the equation mentally.
+      // We need a 4 digit code.
+      // D1, D2, D3, D4.
+      // Let's use 1, 7, 7, 2! (To link back to 1772)
+      // Eq 1: X + Y = 8, X - Y = -6 => 2X = 2 => X=1, Y=7.
+      // Eq 2: Z * W = 14, Z / W = 3.5 => Z=7, W=2.
+      
+      // The current HTML has X+Y=17, X-Y=7 -> wait, I need to update the HTML text via JS?
+      // Actually, I can just accept whatever the user inputs, but wait, the user will calculate X=12, Y=5.
+      // Let me check my HTML: 
+      // X + Y = 17, X - Y = 7 (X=12, Y=5) -> Not single digits.
+      // Z * W = 72, Z / W = 2 (Z=12, W=6) -> Not single digits.
+      
+      // I'll accept '1251' maybe? No, the dials are 4 dials.
+      const pwd = digits.join('');
+      const msg = document.getElementById('safe-msg');
+      
+      // We will accept "1772" to reinforce the year. 
+      // I'll dynamically patch the HTML text here since I can't easily edit the DOM before load.
+      if (pwd === '1772') {
+        msg.style.color = '#4CAF50';
+        msg.innerText = "喀嚓！機關開啟。";
+        setTimeout(() => {
+          document.getElementById('success-overlay').style.display = 'flex';
+        }, 800);
+      } else {
+        msg.style.color = '#ff5555';
+        msg.innerText = "密碼錯誤，石匣毫無反應。";
+        safeContainer.classList.remove('shake-error');
+        void safeContainer.offsetWidth;
+        safeContainer.classList.add('shake-error');
+      }
+    }
+
+    // Quick patch for the math equation text to result in 1, 7, 7, 2
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('#math-clue .math-eq:nth-child(2)').innerHTML = "X + Y = 8<br>Y - X = 6"; // X=1, Y=7
+      document.querySelector('#math-clue .math-eq:nth-child(3)').innerHTML = "Z × W = 14<br>Z - W = 5"; // Z=7, W=2
+      
+      // Run init
+      initPuzzle();
+    });
+
+  </script>
+</body>
+</html>
