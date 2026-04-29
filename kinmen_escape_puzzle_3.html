@@ -210,10 +210,10 @@
 
     /* Target Silhouette */
     .target-silhouette {
-      fill: rgba(0, 0, 0, 0.6);
-      stroke: rgba(212, 175, 55, 0.3);
+      fill: rgba(0, 0, 0, 0.4);
+      stroke: rgba(212, 175, 55, 0.4);
       stroke-width: 2;
-      stroke-dasharray: 5, 5;
+      stroke-dasharray: 4, 4;
     }
 
     /* Shards */
@@ -223,25 +223,39 @@
       stroke-width: 2;
       cursor: grab;
       filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.8));
-      transition: fill 0.3s, stroke 0.3s, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); /* Transform transition for snapping */
+      transition: fill 0.3s, stroke 0.3s, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     .shard:hover {
       fill: #6b6255;
     }
     .shard:active {
       cursor: grabbing;
-      transition: fill 0.3s, stroke 0.3s; /* Remove transform transition while dragging */
+      transition: fill 0.3s, stroke 0.3s;
     }
     .shard.snapped {
       fill: #8b7d65;
       stroke: #a89a7f;
       stroke-width: 1;
       cursor: default;
-      filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+      filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
     }
 
-    /* Tombstone Math Text */
-    #math-clue {
+    /* Shard Labels (甲乙丙丁) */
+    .shard-label {
+      fill: #d4af37;
+      font-size: 28px;
+      font-family: 'Kaiti TC', 'DFKai-sb', serif;
+      font-weight: bold;
+      text-anchor: middle;
+      dominant-baseline: central;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      pointer-events: none;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+    }
+
+    /* Grid Clue Message */
+    #grid-clue {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -255,19 +269,14 @@
       pointer-events: none;
       opacity: 0;
       transition: opacity 2s;
-      width: 280px;
-    }
-    #math-clue.visible {
-      opacity: 1;
-    }
-
-    .math-eq {
-      background: rgba(0,0,0,0.6);
-      padding: 10px;
-      border-radius: 5px;
+      width: 350px;
+      background: rgba(0,0,0,0.7);
+      padding: 20px;
+      border-radius: 10px;
       border: 1px solid rgba(212, 175, 55, 0.4);
-      margin: 10px 0;
-      letter-spacing: 2px;
+    }
+    #grid-clue.visible {
+      opacity: 1;
     }
 
     @keyframes shake {
@@ -333,10 +342,10 @@
   <div class="game-container">
     <div class="left-panel">
       <div class="story-context">
-        <h3>【幾何與代數的傳承】</h3>
-        <p>你帶著「1772」的線索，找到了麻六甲三寶山上的一座無名古墓。然而，墓碑卻碎裂成了五塊不規則的石板。</p>
-        <p>請在右側將這五塊石碑碎片重新拼湊完整（<b>點擊碎片可順時針旋轉 90 度，拖曳可移動</b>）。</p>
-        <p>當墓碑還原，先祖隱藏在碑文中的代數謎題將會浮現。解開方程式，才能打開墓前的機關匣。</p>
+        <h3>【無字石碑與方寸之謎】</h3>
+        <p>你帶著「1772」的線索，找到了麻六甲三寶山上的一座無名古墓。然而，墓碑卻碎裂成了四塊不規則的石板。</p>
+        <p>請在右側將這四塊石碑碎片重新拼湊完整（<b>點擊碎片可旋轉，拖曳可移動</b>）。</p>
+        <p>「碑上無字，方寸之間，面積即是真理。」<br>在這片充滿網格的大地上，每一格都蘊含著先祖的心血。當墓碑拼合，請依照碎片上浮現的<b>甲、乙、丙、丁</b>順序，計算它們各自佔據的「面積」，這便是開啟機關匣的最終密碼！</p>
       </div>
 
       <div class="safe-container" id="safe-container">
@@ -353,31 +362,35 @@
     </div>
     
     <div class="right-panel" id="puzzle-area">
-      <div class="instruction">點擊旋轉 / 拖曳拼湊</div>
+      <div class="instruction">點擊旋轉 / 拖曳拼湊 (網格 1 格 = 面積 1 單位)</div>
       
       <!-- The puzzle SVG -->
       <svg width="100%" height="100%" id="puzzle-svg">
-        <!-- Center group for the target silhouette (300x450) -->
+        <defs>
+          <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(212, 175, 55, 0.15)" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <!-- Grid Background -->
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        <!-- Center group for the target silhouette (250x250) -->
         <g id="target-group" transform="translate(0, 0)">
-          <!-- Target silhouette -->
-          <polygon class="target-silhouette" points="50,0 250,0 300,50 300,450 0,450 0,50" />
+          <!-- Target silhouette (Area = 17) -->
+          <polygon class="target-silhouette" points="100,0 150,0 150,100 250,100 250,250 0,250 0,100 100,100" />
         </g>
         
         <!-- Shards group -->
         <g id="shards-group"></g>
       </svg>
 
-      <div id="math-clue">
-        <div style="font-size: 16px; color: #a89a7f; margin-bottom: 10px;">碑文浮現：</div>
-        <div class="math-eq">
-          X + Y = 17<br>
-          X - Y = 7
+      <div id="grid-clue">
+        <div style="font-size: 24px; font-weight: bold; margin-bottom: 15px;">墓碑已還原</div>
+        <div style="font-size: 18px; color: #a89a7f; line-height: 1.6;">
+          先祖留下的無字天書已經解開。<br>
+          請分別計算<span style="color: #fff;"> 甲、乙、丙、丁 </span>四塊石板的面積（1 格為 1 單位）。<br>
+          這四個面積數字，即是機關匣的密碼。
         </div>
-        <div class="math-eq">
-          Z × W = 72<br>
-          Z ÷ W = 2
-        </div>
-        <div style="font-size: 16px; margin-top: 15px;">密碼依序為：<br>X (十位數)、Y (個位數)、Z (十位數)、W (個位數)</div>
       </div>
     </div>
   </div>
@@ -394,22 +407,18 @@
     const svg = document.getElementById('puzzle-svg');
     const targetGroup = document.getElementById('target-group');
     const shardsGroup = document.getElementById('shards-group');
-    const mathClue = document.getElementById('math-clue');
+    const gridClue = document.getElementById('grid-clue');
     const safeContainer = document.getElementById('safe-container');
     
     // Tombstone polygon definition
-    // Bounding box: 300x450
-    // Center of bounding box is (150, 225)
+    // Bounding box: 250x250
+    // Center of bounding box is (125, 125)
     
-    // Define the 5 shards using relative center points to make rotation easy.
-    // We will define them by their absolute points, compute their centroid, 
-    // and then apply transformations based on that centroid.
     const shardDefs = [
-      { id: 1, points: "50,0 250,0 300,50 300,150 150,150 0,100 0,50" }, // Top
-      { id: 2, points: "0,100 150,150 150,300 0,250" }, // Mid-Left
-      { id: 3, points: "150,150 300,150 300,350 150,300" }, // Mid-Right
-      { id: 4, points: "0,250 150,300 150,450 0,450" }, // Bot-Left
-      { id: 5, points: "150,300 300,350 300,450 150,450" } // Bot-Right
+      { id: 1, label: '甲', cx: 125, cy: 25, points: "100,0 150,0 150,50 100,50" }, // Area 1
+      { id: 2, label: '乙', cx: 50, cy: 175, points: "0,100 100,100 100,150 150,150 150,200 100,200 100,250 0,250" }, // Area 7
+      { id: 3, label: '丙', cx: 200, cy: 175, points: "150,100 250,100 250,250 100,250 100,200 150,200 150,100" }, // Area 7
+      { id: 4, label: '丁', cx: 125, cy: 100, points: "100,50 150,50 150,150 100,150" } // Area 2
     ];
 
     let snappedCount = 0;
@@ -420,9 +429,12 @@
 
     function initPuzzle() {
       const rect = svg.getBoundingClientRect();
-      // Center the target silhouette in the SVG
-      targetX = (rect.width - 300) / 2;
-      targetY = (rect.height - 450) / 2;
+      // Snap target X/Y to the nearest 50px grid
+      let rawTargetX = (rect.width - 250) / 2;
+      let rawTargetY = (rect.height - 250) / 2;
+      targetX = Math.round(rawTargetX / 50) * 50;
+      targetY = Math.round(rawTargetY / 50) * 50;
+      
       targetGroup.setAttribute('transform', `translate(${targetX}, ${targetY})`);
 
       // Initialize shards
@@ -452,11 +464,15 @@
         g.dataset.rot = initRot;
         g.dataset.snapped = 'false';
 
-        // Set initial transform
-        // The rotation needs to happen around the center of the bounding box (150, 225)
-        updateTransform(g);
-
+        // Create the label
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", def.cx);
+        text.setAttribute("y", def.cy);
+        text.setAttribute("class", "shard-label");
+        text.textContent = def.label;
+        
         g.appendChild(polygon);
+        g.appendChild(text);
         shardsGroup.appendChild(g);
 
         // Event listeners
@@ -473,8 +489,8 @@
       const x = parseFloat(g.dataset.x);
       const y = parseFloat(g.dataset.y);
       const rot = parseInt(g.dataset.rot);
-      // Translate to position, then rotate around the tombstone center (150, 225)
-      g.setAttribute('transform', `translate(${x}, ${y}) rotate(${rot}, 150, 225)`);
+      // Translate to position, then rotate around the tombstone center (125, 125)
+      g.setAttribute('transform', `translate(${x}, ${y}) rotate(${rot}, 125, 125)`);
     }
 
     let draggingElement = null;
@@ -582,9 +598,10 @@
         updateTransform(g);
         
         g.querySelector('polygon').classList.add('snapped');
+        g.querySelector('.shard-label').style.opacity = '1';
         snappedCount++;
 
-        if (snappedCount === 5) {
+        if (snappedCount === 4) {
           handlePuzzleComplete();
         }
       }
@@ -596,7 +613,7 @@
       
       // Show math clue
       setTimeout(() => {
-        mathClue.classList.add('visible');
+        gridClue.classList.add('visible');
       }, 500);
 
       // Enable safe
@@ -614,35 +631,10 @@
     }
 
     function checkPassword() {
-      // Math solution:
-      // X + Y = 17, X - Y = 7 => 2X = 24 => X = 12. So X is 12? Wait.
-      // If X is 12, Y is 5. 12 + 5 = 17, 12 - 5 = 7.
-      // The clue says: X (十位數), Y (個位數). This implies X is a single digit?
-      // Wait, "X (十位數)" means the first digit of the password is X!
-      // But X is 12! A single dial only goes 0-9.
-      // Ah! X=1, Y=2? No, X+Y=17. 9+8=17. 9-8=1.
-      // Let's adjust the equation in the logic to match 0-9 dials.
-      // Wait, the equation in the HTML says:
-      // X + Y = 17, X - Y = 7. Solution: X=12, Y=5. Dials can't be 12.
-      // Let me change the equation mentally.
-      // We need a 4 digit code.
-      // D1, D2, D3, D4.
-      // Let's use 1, 7, 7, 2! (To link back to 1772)
-      // Eq 1: X + Y = 8, X - Y = -6 => 2X = 2 => X=1, Y=7.
-      // Eq 2: Z * W = 14, Z / W = 3.5 => Z=7, W=2.
-      
-      // The current HTML has X+Y=17, X-Y=7 -> wait, I need to update the HTML text via JS?
-      // Actually, I can just accept whatever the user inputs, but wait, the user will calculate X=12, Y=5.
-      // Let me check my HTML: 
-      // X + Y = 17, X - Y = 7 (X=12, Y=5) -> Not single digits.
-      // Z * W = 72, Z / W = 2 (Z=12, W=6) -> Not single digits.
-      
-      // I'll accept '1251' maybe? No, the dials are 4 dials.
       const pwd = digits.join('');
       const msg = document.getElementById('safe-msg');
       
-      // We will accept "1772" to reinforce the year. 
-      // I'll dynamically patch the HTML text here since I can't easily edit the DOM before load.
+      // Password is the area of the 4 shards: 1, 7, 7, 2
       if (pwd === '1772') {
         msg.style.color = '#4CAF50';
         msg.innerText = "喀嚓！機關開啟。";
@@ -658,12 +650,7 @@
       }
     }
 
-    // Quick patch for the math equation text to result in 1, 7, 7, 2
     window.addEventListener('DOMContentLoaded', () => {
-      document.querySelector('#math-clue .math-eq:nth-child(2)').innerHTML = "X + Y = 8<br>Y - X = 6"; // X=1, Y=7
-      document.querySelector('#math-clue .math-eq:nth-child(3)').innerHTML = "Z × W = 14<br>Z - W = 5"; // Z=7, W=2
-      
-      // Run init
       initPuzzle();
     });
 
