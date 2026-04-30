@@ -240,22 +240,10 @@
       filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
     }
 
-    /* Shard Labels (甲乙丙丁) */
-    .shard-label {
-      fill: #d4af37;
-      font-size: 28px;
-      font-family: 'Kaiti TC', 'DFKai-sb', serif;
-      font-weight: bold;
-      text-anchor: middle;
-      dominant-baseline: central;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      pointer-events: none;
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
-    }
+    /* Shard Labels - Removed */
 
-    /* Grid Clue Message */
-    #grid-clue {
+    /* Poem Clue Message */
+    #poem-clue {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -269,13 +257,13 @@
       pointer-events: none;
       opacity: 0;
       transition: opacity 2s;
-      width: 350px;
-      background: rgba(0,0,0,0.7);
+      width: 380px;
+      background: rgba(0,0,0,0.8);
       padding: 20px;
       border-radius: 10px;
       border: 1px solid rgba(212, 175, 55, 0.4);
     }
-    #grid-clue.visible {
+    #poem-clue.visible {
       opacity: 1;
     }
 
@@ -342,10 +330,10 @@
   <div class="game-container">
     <div class="left-panel">
       <div class="story-context">
-        <h3>【無字石碑與方寸之謎】</h3>
+        <h3>【落番血淚與無字碑】</h3>
         <p>你帶著「1772」的線索，找到了麻六甲三寶山上的一座無名古墓。然而，墓碑卻碎裂成了四塊不規則的石板。</p>
         <p>請在右側將這四塊石碑碎片重新拼湊完整（<b>點擊碎片可旋轉，拖曳可移動</b>）。</p>
-        <p>「碑上無字，方寸之間，面積即是真理。」<br>在這片充滿網格的大地上，每一格都蘊含著先祖的心血。當墓碑拼合，請依照碎片上浮現的<b>甲、乙、丙、丁</b>順序，計算它們各自佔據的「面積」，這便是開啟機關匣的最終密碼！</p>
+        <p>當墓碑還原，隱藏在其中的碑文將會浮現。仔細閱讀先祖留下的絕句，字裡行間藏著開啟機關匣的最終密碼！</p>
       </div>
 
       <div class="safe-container" id="safe-container">
@@ -362,34 +350,41 @@
     </div>
     
     <div class="right-panel" id="puzzle-area">
-      <div class="instruction">點擊旋轉 / 拖曳拼湊 (網格 1 格 = 面積 1 單位)</div>
+      <div class="instruction">點擊旋轉 / 拖曳拼湊</div>
       
       <!-- The puzzle SVG -->
       <svg width="100%" height="100%" id="puzzle-svg">
         <defs>
-          <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(212, 175, 55, 0.15)" stroke-width="1"/>
-          </pattern>
+          <filter id="text-glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
         </defs>
-        <!-- Grid Background -->
-        <rect width="100%" height="100%" fill="url(#grid)" />
 
         <!-- Center group for the target silhouette (250x250) -->
         <g id="target-group" transform="translate(0, 0)">
-          <!-- Target silhouette (Area = 17) -->
+          <!-- Target silhouette -->
           <polygon class="target-silhouette" points="100,0 150,0 150,100 250,100 250,250 0,250 0,100 100,100" />
+          
+          <!-- Hidden Tombstone Poem -->
+          <g id="tombstone-text" style="opacity: 0; transition: opacity 3s;" fill="#ffd700" font-family="'Kaiti TC', 'DFKai-sb', serif" font-size="18" letter-spacing="4" filter="url(#text-glow)">
+            <text x="175" y="115" writing-mode="vertical-rl">一生漂泊客南洋</text>
+            <text x="145" y="115" writing-mode="vertical-rl">七海風波歷盡霜</text>
+            <text x="115" y="115" writing-mode="vertical-rl">七尺男兒終骨朽</text>
+            <text x="85"  y="115" writing-mode="vertical-rl">二老垂淚望歸航</text>
+          </g>
         </g>
         
         <!-- Shards group -->
         <g id="shards-group"></g>
       </svg>
 
-      <div id="grid-clue">
+      <div id="poem-clue">
         <div style="font-size: 24px; font-weight: bold; margin-bottom: 15px;">墓碑已還原</div>
         <div style="font-size: 18px; color: #a89a7f; line-height: 1.6;">
-          先祖留下的無字天書已經解開。<br>
-          請分別計算<span style="color: #fff;"> 甲、乙、丙、丁 </span>四塊石板的面積（1 格為 1 單位）。<br>
-          這四個面積數字，即是機關匣的密碼。
+          碑文浮現出一首絕句，道盡了落番客的一生。<br>
+          請仔細閱讀每一句的<span style="color: #fff;">「開頭第一個字」</span>。<br>
+          這四個數字，即是機關匣的密碼。
         </div>
       </div>
     </div>
@@ -406,8 +401,9 @@
   <script>
     const svg = document.getElementById('puzzle-svg');
     const targetGroup = document.getElementById('target-group');
+    const tombstoneText = document.getElementById('tombstone-text');
     const shardsGroup = document.getElementById('shards-group');
-    const gridClue = document.getElementById('grid-clue');
+    const poemClue = document.getElementById('poem-clue');
     const safeContainer = document.getElementById('safe-container');
     
     // Tombstone polygon definition
@@ -415,10 +411,10 @@
     // Center of bounding box is (125, 125)
     
     const shardDefs = [
-      { id: 1, label: '甲', cx: 125, cy: 25, points: "100,0 150,0 150,50 100,50" }, // Area 1
-      { id: 2, label: '乙', cx: 50, cy: 175, points: "0,100 100,100 100,150 150,150 150,200 100,200 100,250 0,250" }, // Area 7
-      { id: 3, label: '丙', cx: 200, cy: 175, points: "150,100 250,100 250,250 100,250 100,200 150,200 150,100" }, // Area 7
-      { id: 4, label: '丁', cx: 125, cy: 100, points: "100,50 150,50 150,150 100,150" } // Area 2
+      { id: 1, points: "100,0 150,0 150,50 100,50" }, // Area 1
+      { id: 2, points: "0,100 100,100 100,150 150,150 150,200 100,200 100,250 0,250" }, // Area 7
+      { id: 3, points: "150,100 250,100 250,250 100,250 100,200 150,200 150,100" }, // Area 7
+      { id: 4, points: "100,50 150,50 150,150 100,150" } // Area 2
     ];
 
     let snappedCount = 0;
@@ -464,15 +460,7 @@
         g.dataset.rot = initRot;
         g.dataset.snapped = 'false';
 
-        // Create the label
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", def.cx);
-        text.setAttribute("y", def.cy);
-        text.setAttribute("class", "shard-label");
-        text.textContent = def.label;
-        
         g.appendChild(polygon);
-        g.appendChild(text);
         shardsGroup.appendChild(g);
 
         // Event listeners
@@ -598,7 +586,6 @@
         updateTransform(g);
         
         g.querySelector('polygon').classList.add('snapped');
-        g.querySelector('.shard-label').style.opacity = '1';
         snappedCount++;
 
         if (snappedCount === 4) {
@@ -609,17 +596,22 @@
 
     function handlePuzzleComplete() {
       // Hide the target silhouette
-      targetGroup.style.display = 'none';
+      document.querySelector('.target-silhouette').style.opacity = '0';
       
-      // Show math clue
+      // Show the poem on the tombstone
       setTimeout(() => {
-        gridClue.classList.add('visible');
+        tombstoneText.style.opacity = '1';
       }, 500);
+
+      // Show poem clue
+      setTimeout(() => {
+        poemClue.classList.add('visible');
+      }, 2000);
 
       // Enable safe
       setTimeout(() => {
         safeContainer.classList.add('active');
-      }, 2000);
+      }, 4000);
     }
 
     // --- Safe Logic ---
