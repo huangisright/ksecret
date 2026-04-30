@@ -374,10 +374,10 @@
         <g id="poem-group" transform="translate(0, 0)">
           <!-- Hidden Tombstone Poem -->
           <g id="tombstone-text" style="opacity: 0; transition: opacity 3s;" fill="#ffd700" font-family="'Kaiti TC', 'DFKai-sb', serif" font-size="22" letter-spacing="8" filter="url(#text-glow)">
-            <text x="210" y="110" writing-mode="vertical-rl">一生漂泊客南洋</text>
-            <text x="170" y="110" writing-mode="vertical-rl">七海風波歷盡霜</text>
-            <text x="130" y="110" writing-mode="vertical-rl">七尺男兒終骨朽</text>
-            <text x="90"  y="110" writing-mode="vertical-rl">二老垂淚望歸航</text>
+            <text x="210" y="110" writing-mode="vertical-rl">一生血汗寄汪洋</text>
+            <text x="170" y="110" writing-mode="vertical-rl">九死一生歷風霜</text>
+            <text x="130" y="110" writing-mode="vertical-rl">四海為家尋生路</text>
+            <text x="90"  y="110" writing-mode="vertical-rl">五洲漂泊斷肝腸</text>
           </g>
         </g>
       </svg>
@@ -638,8 +638,8 @@
       const pwd = digits.join('');
       const msg = document.getElementById('safe-msg');
       
-      // Password is the area of the 4 shards: 1, 7, 7, 2
-      if (pwd === '1772') {
+      // 密碼隱藏於碑文藏頭詩中：1945
+      if (pwd === '1945') {
         msg.style.color = '#4CAF50';
         msg.innerText = "喀嚓！機關開啟。";
         if (typeof window.markLevelCleared === 'function') window.markLevelCleared(3);
