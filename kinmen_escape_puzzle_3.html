@@ -365,7 +365,13 @@
         <g id="target-group" transform="translate(0, 0)">
           <!-- Target silhouette -->
           <polygon class="target-silhouette" points="30,100 80,30 220,30 270,100 270,450 30,450" />
-          
+        </g>
+        
+        <!-- Shards group -->
+        <g id="shards-group"></g>
+
+        <!-- Poem group (rendered on top of shards) -->
+        <g id="poem-group" transform="translate(0, 0)">
           <!-- Hidden Tombstone Poem -->
           <g id="tombstone-text" style="opacity: 0; transition: opacity 3s;" fill="#ffd700" font-family="'Kaiti TC', 'DFKai-sb', serif" font-size="22" letter-spacing="8" filter="url(#text-glow)">
             <text x="210" y="110" writing-mode="vertical-rl">一生漂泊客南洋</text>
@@ -374,9 +380,6 @@
             <text x="90"  y="110" writing-mode="vertical-rl">二老垂淚望歸航</text>
           </g>
         </g>
-        
-        <!-- Shards group -->
-        <g id="shards-group"></g>
       </svg>
 
       <div id="poem-clue">
@@ -429,6 +432,7 @@
       targetY = (rect.height - 450) / 2;
       
       targetGroup.setAttribute('transform', `translate(${targetX}, ${targetY})`);
+      document.getElementById('poem-group').setAttribute('transform', `translate(${targetX}, ${targetY})`);
 
       // Initialize shards
       shardDefs.forEach((def, index) => {
@@ -638,6 +642,7 @@
       if (pwd === '1772') {
         msg.style.color = '#4CAF50';
         msg.innerText = "喀嚓！機關開啟。";
+        if (typeof window.markLevelCleared === 'function') window.markLevelCleared(3);
         setTimeout(() => {
           document.getElementById('success-overlay').style.display = 'flex';
         }, 800);
@@ -655,5 +660,6 @@
     });
 
   </script>
+  <script src="timer.js"></script>
 </body>
 </html>

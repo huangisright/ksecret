@@ -549,6 +549,7 @@
 
       if (isCorrect) {
         // Success
+        if (typeof window.markLevelCleared === 'function') window.markLevelCleared(2);
         setTimeout(() => {
           document.getElementById('success-overlay').classList.add('visible');
         }, 500);
@@ -590,5 +591,6 @@
     document.getElementById('port-P0').classList.add('active');
 
   </script>
+  <script src="timer.js"></script>
 </body>
 </html>

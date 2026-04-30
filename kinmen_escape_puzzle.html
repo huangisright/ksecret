@@ -517,6 +517,7 @@
       if (pwd === '1385') {
         msg.style.color = '#4CAF50';
         msg.innerText = "喀嚓！密碼正確。";
+        if (typeof window.markLevelCleared === 'function') window.markLevelCleared(1);
         setTimeout(() => {
           document.getElementById('success-overlay').style.display = 'flex';
         }, 800);
@@ -530,5 +531,6 @@
       }
     }
   </script>
+  <script src="timer.js"></script>
 </body>
 </html>
