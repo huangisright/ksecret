@@ -495,7 +495,12 @@
         clientX = e.touches[0].clientX;
         clientY = e.touches[0].clientY;
       }
-      return { x: clientX, y: clientY };
+      
+      const pt = svg.createSVGPoint();
+      pt.x = clientX;
+      pt.y = clientY;
+      const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+      return { x: svgP.x, y: svgP.y };
     }
 
     function handleDragStart(e) {
