@@ -438,11 +438,15 @@
         polygon.setAttribute("id", `shard-${def.id}`);
         
         // Random initial position around the center
-        const angle = (index / 5) * Math.PI * 2;
-        const radius = 250; // scatter radius
+        const angle = (index / 4) * Math.PI * 2;
+        const radius = 200; // scatter radius
         
-        const initX = targetX + Math.cos(angle) * radius;
-        const initY = targetY + Math.sin(angle) * radius;
+        let initX = targetX + Math.cos(angle) * radius;
+        let initY = targetY + Math.sin(angle) * radius;
+        
+        // Keep within screen bounds to prevent pieces from disappearing on mobile
+        initX = Math.max(20, Math.min(rect.width - 300, initX));
+        initY = Math.max(20, Math.min(rect.height - 450, initY));
         
         // Random initial rotation (0, 90, 180, 270)
         const initRot = Math.floor(Math.random() * 4) * 90;
@@ -459,15 +463,17 @@
 
         g.appendChild(polygon);
         shardsGroup.appendChild(g);
+        
+        // Apply initial transform to visually scatter them!
+        updateTransform(g);
 
         // Event listeners
         g.addEventListener('mousedown', handleDragStart);
         g.addEventListener('touchstart', handleDragStart, {passive: false});
       });
       
-      // Position math clue in the center
-      mathClue.style.left = (rect.width / 2) + 'px';
-      mathClue.style.top = (rect.height / 2) + 'px';
+      // Position safe clue in the center
+      // (mathClue was removed, so this is no longer needed)
     }
 
     function updateTransform(g) {
