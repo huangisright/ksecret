@@ -361,17 +361,17 @@
           </filter>
         </defs>
 
-        <!-- Center group for the target silhouette (250x250) -->
+        <!-- Center group for the target silhouette (300x450) -->
         <g id="target-group" transform="translate(0, 0)">
           <!-- Target silhouette -->
-          <polygon class="target-silhouette" points="100,0 150,0 150,100 250,100 250,250 0,250 0,100 100,100" />
+          <polygon class="target-silhouette" points="30,100 80,30 220,30 270,100 270,450 30,450" />
           
           <!-- Hidden Tombstone Poem -->
-          <g id="tombstone-text" style="opacity: 0; transition: opacity 3s;" fill="#ffd700" font-family="'Kaiti TC', 'DFKai-sb', serif" font-size="18" letter-spacing="4" filter="url(#text-glow)">
-            <text x="175" y="115" writing-mode="vertical-rl">一生漂泊客南洋</text>
-            <text x="145" y="115" writing-mode="vertical-rl">七海風波歷盡霜</text>
-            <text x="115" y="115" writing-mode="vertical-rl">七尺男兒終骨朽</text>
-            <text x="85"  y="115" writing-mode="vertical-rl">二老垂淚望歸航</text>
+          <g id="tombstone-text" style="opacity: 0; transition: opacity 3s;" fill="#ffd700" font-family="'Kaiti TC', 'DFKai-sb', serif" font-size="22" letter-spacing="8" filter="url(#text-glow)">
+            <text x="210" y="110" writing-mode="vertical-rl">一生漂泊客南洋</text>
+            <text x="170" y="110" writing-mode="vertical-rl">七海風波歷盡霜</text>
+            <text x="130" y="110" writing-mode="vertical-rl">七尺男兒終骨朽</text>
+            <text x="90"  y="110" writing-mode="vertical-rl">二老垂淚望歸航</text>
           </g>
         </g>
         
@@ -407,14 +407,14 @@
     const safeContainer = document.getElementById('safe-container');
     
     // Tombstone polygon definition
-    // Bounding box: 250x250
-    // Center of bounding box is (125, 125)
+    // Bounding box: 300x450
+    // Center of bounding box is (150, 225)
     
     const shardDefs = [
-      { id: 1, points: "100,0 150,0 150,50 100,50" }, // Area 1
-      { id: 2, points: "0,100 100,100 100,150 150,150 150,200 100,200 100,250 0,250" }, // Area 7
-      { id: 3, points: "150,100 250,100 250,250 100,250 100,200 150,200 150,100" }, // Area 7
-      { id: 4, points: "100,50 150,50 150,150 100,150" } // Area 2
+      { id: 1, points: "30,100 80,30 220,30 270,100 220,150 150,120 80,150" }, // Top
+      { id: 2, points: "30,100 80,150 150,120 100,250 180,350 150,450 30,450" }, // Left
+      { id: 3, points: "150,120 220,150 270,100 270,280 180,300 100,250" }, // Right-Top
+      { id: 4, points: "100,250 180,300 270,280 270,450 150,450 180,350" } // Right-Bottom
     ];
 
     let snappedCount = 0;
@@ -425,11 +425,8 @@
 
     function initPuzzle() {
       const rect = svg.getBoundingClientRect();
-      // Snap target X/Y to the nearest 50px grid
-      let rawTargetX = (rect.width - 250) / 2;
-      let rawTargetY = (rect.height - 250) / 2;
-      targetX = Math.round(rawTargetX / 50) * 50;
-      targetY = Math.round(rawTargetY / 50) * 50;
+      targetX = (rect.width - 300) / 2;
+      targetY = (rect.height - 450) / 2;
       
       targetGroup.setAttribute('transform', `translate(${targetX}, ${targetY})`);
 
@@ -477,8 +474,8 @@
       const x = parseFloat(g.dataset.x);
       const y = parseFloat(g.dataset.y);
       const rot = parseInt(g.dataset.rot);
-      // Translate to position, then rotate around the tombstone center (125, 125)
-      g.setAttribute('transform', `translate(${x}, ${y}) rotate(${rot}, 125, 125)`);
+      // Translate to position, then rotate around the tombstone center (150, 225)
+      g.setAttribute('transform', `translate(${x}, ${y}) rotate(${rot}, 150, 225)`);
     }
 
     let draggingElement = null;
