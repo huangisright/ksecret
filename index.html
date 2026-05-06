@@ -140,6 +140,36 @@
       border-color: #d4af37;
     }
 
+    /* Cleared Stamp */
+    .cleared-stamp {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 60px;
+      height: 60px;
+      border: 3px solid #c83232;
+      color: #c83232;
+      font-family: 'Kaiti TC', 'DFKai-sb', serif;
+      font-size: 20px;
+      font-weight: bold;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transform: rotate(15deg);
+      letter-spacing: 2px;
+      box-shadow: inset 0 0 5px rgba(200,50,50,0.5), 0 0 5px rgba(200,50,50,0.5);
+      background: radial-gradient(circle, rgba(255,255,255,0.9) 20%, rgba(200,50,50,0.1) 80%);
+      z-index: 10;
+      pointer-events: none;
+    }
+    .level-card.cleared .cleared-stamp {
+      display: flex;
+    }
+    .level-card.cleared {
+      border-color: #c83232;
+    }
+
     @media (max-width: 768px) {
       .container { padding: 20px; }
       h1 { font-size: 32px; letter-spacing: 4px; margin-bottom: 10px; }
@@ -159,7 +189,8 @@
     <div class="level-grid">
       
       <!-- Level 1 -->
-      <a href="kinmen_escape_puzzle.html" class="level-card">
+      <a href="kinmen_escape_puzzle.html" class="level-card" id="card-1">
+        <div class="cleared-stamp">過關</div>
         <div class="corner top-left"></div>
         <div class="corner top-right"></div>
         <div class="corner bottom-left"></div>
@@ -170,7 +201,8 @@
       </a>
 
       <!-- Level 2 -->
-      <a href="kinmen_escape_puzzle_2.html" class="level-card">
+      <a href="kinmen_escape_puzzle_2.html" class="level-card" id="card-2">
+        <div class="cleared-stamp">過關</div>
         <div class="corner top-left"></div>
         <div class="corner top-right"></div>
         <div class="corner bottom-left"></div>
@@ -181,7 +213,8 @@
       </a>
 
       <!-- Level 3 -->
-      <a href="kinmen_escape_puzzle_3.html" class="level-card">
+      <a href="kinmen_escape_puzzle_3.html" class="level-card" id="card-3">
+        <div class="cleared-stamp">過關</div>
         <div class="corner top-left"></div>
         <div class="corner top-right"></div>
         <div class="corner bottom-left"></div>
@@ -195,5 +228,16 @@
   </div>
 
   <script src="timer.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const p1 = localStorage.getItem('puzzle1Cleared') === 'true';
+      const p2 = localStorage.getItem('puzzle2Cleared') === 'true';
+      const p3 = localStorage.getItem('puzzle3Cleared') === 'true';
+      
+      if (p1) document.getElementById('card-1').classList.add('cleared');
+      if (p2) document.getElementById('card-2').classList.add('cleared');
+      if (p3) document.getElementById('card-3').classList.add('cleared');
+    });
+  </script>
 </body>
 </html>
