@@ -320,6 +320,8 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="animations.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -344,8 +346,8 @@
         <p>這些僑匯不僅養活了家鄉的妻兒老小，更有一大部分被用來光宗耀祖——在家鄉起造堅固華麗的閩南雙落大厝或洋樓。每一封番仔信，都承載著出洋客對故鄉深深的眷戀與責任。</p>
         <div style="margin-top: 20px; padding: 15px; border-left: 4px solid #8b7355; background: rgba(139, 115, 85, 0.1);">
           <p style="margin: 0; color: #d4af37; letter-spacing: 1px; line-height: 1.6;">
-            🔍 <b>線索：</b><br>
-            「大厝正廳的最深處，是整座宅第的核心，供奉著不可忘卻的血脈傳承。若能將藍圖深處的『紅色印記』，歸位於家書中出洋客最不可忘的『那兩個字』，機關自會解開。」
+            📐 <b>匠師暗語：</b><br>
+            「落葉歸根，不離其宗。將大厝藍圖深處的硃砂印記，安放於信中游子『最不可忘的傳承』，密碼自會浮現。」
           </p>
         </div>
       </div>
@@ -428,7 +430,8 @@
 
   <!-- Success Overlay -->
   <div id="success-overlay">
-    <h1>解鎖成功！</h1>
+    <div class="anim-container" style="display: flex; flex-direction: column; align-items: center;">
+      <h1>解鎖成功！<div class="seal-stamp">破關</div></h1>
     <p>您已成功打開僑匯櫃，裡面放著下南洋打拼的先輩寄回來的血汗錢。<br>這筆錢將用於修葺祖厝，也象徵著出洋客對故鄉與家族的深切牽掛與責任。</p>
     <div style="margin: 30px 0; padding: 15px 30px; border: 2px dashed #d4af37; border-radius: 10px; background: rgba(0,0,0,0.5);">
       <p style="margin: 0; font-size: 20px; color: #f4cf57;">【獲得重要線索】<br>在保險箱底層，你發現了一組數字：<span style="font-size: 32px; font-weight: bold; letter-spacing: 5px;">1958</span></p>
@@ -442,6 +445,7 @@
     </div>
 
     <button class="btn-restart" onclick="location.href='index.html'">返回首頁</button>
+    </div>
   </div>
 
   <script>
@@ -536,7 +540,9 @@
         msg.innerText = "喀嚓！密碼正確。";
         if (typeof window.markLevelCleared === 'function') window.markLevelCleared(1);
         setTimeout(() => {
-          document.getElementById('success-overlay').style.display = 'flex';
+          const overlay = document.getElementById('success-overlay');
+          overlay.style.display = 'flex';
+          triggerSuccessAnimation();
         }, 800);
       } else {
         msg.style.color = '#ff5555';
@@ -549,5 +555,6 @@
     }
   </script>
   <script src="timer.js"></script>
+  <script src="animations.js"></script>
 </body>
 </html>

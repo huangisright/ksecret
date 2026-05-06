@@ -299,6 +299,8 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="animations.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -381,7 +383,8 @@
 
   <!-- Success Overlay -->
   <div id="success-overlay">
-    <h1>航線解鎖成功！</h1>
+    <div class="anim-container" style="display: flex; flex-direction: column; align-items: center;">
+      <h1>航線解鎖成功！<div class="seal-stamp">破關</div></h1>
     <p>商船歷經千辛萬苦，終於抵達麻六甲。<br>隨著正確的歷史航線被繪出，暗格發出「喀」的一聲彈開了。</p>
     <div style="margin: 30px 0; padding: 15px 30px; border: 2px dashed #d4af37; border-radius: 10px; background: rgba(0,0,0,0.5);">
       <p style="margin: 0; font-size: 20px; color: #f4cf57;">【獲得重要線索】<br>暗格內有一張泛黃的拓印紙，上面記錄著麻六甲三寶山一座金門先輩古墓的立碑年份（乾隆37年）：<br><span style="font-size: 32px; font-weight: bold; letter-spacing: 5px;">1772</span></p>
@@ -395,6 +398,7 @@
     </div>
 
     <button class="btn-reset" onclick="location.href='index.html'" style="font-size: 20px; padding: 15px 30px;">返回首頁</button>
+    </div>
   </div>
 
   <script>
@@ -559,7 +563,9 @@
         // Success
         if (typeof window.markLevelCleared === 'function') window.markLevelCleared(2);
         setTimeout(() => {
-          document.getElementById('success-overlay').classList.add('visible');
+          const overlay = document.getElementById('success-overlay');
+          overlay.classList.add('visible');
+          triggerSuccessAnimation();
         }, 500);
       } else {
         failSequence();
@@ -600,5 +606,6 @@
 
   </script>
   <script src="timer.js"></script>
+  <script src="animations.js"></script>
 </body>
 </html>

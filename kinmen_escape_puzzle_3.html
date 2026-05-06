@@ -319,6 +319,8 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="animations.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -395,7 +397,8 @@
 
   <!-- Success Overlay -->
   <div id="success-overlay">
-    <h1>全系列通關！</h1>
+    <div class="anim-container" style="display: flex; flex-direction: column; align-items: center;">
+      <h1>全系列通關！<div class="seal-stamp">破關</div></h1>
     <p>機關匣緩緩打開，裡面放著一本寫滿南洋貿易路線的古老帳冊，以及一封家書的下半部。</p>
     <p>透過數學邏輯與幾何空間的推理，你成功還原了金門先輩「落番」的血淚史。<br>這份歷史記憶，將由你繼續傳承下去。</p>
     
@@ -407,6 +410,7 @@
     </div>
 
     <button class="btn-home" style="position: static; margin-top: 20px; transform: none; font-size: 20px; padding: 10px 30px;" onclick="location.href='index.html'">回到首頁</button>
+    </div>
   </div>
 
   <script>
@@ -652,7 +656,9 @@
         msg.innerText = "喀嚓！機關開啟。";
         if (typeof window.markLevelCleared === 'function') window.markLevelCleared(3);
         setTimeout(() => {
-          document.getElementById('success-overlay').style.display = 'flex';
+          const overlay = document.getElementById('success-overlay');
+          overlay.style.display = 'flex';
+          triggerSuccessAnimation();
         }, 800);
       } else {
         msg.style.color = '#ff5555';
@@ -669,5 +675,6 @@
 
   </script>
   <script src="timer.js"></script>
+  <script src="animations.js"></script>
 </body>
 </html>
