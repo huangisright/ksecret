@@ -242,30 +242,7 @@
 
     /* Shard Labels - Removed */
 
-    /* Poem Clue Message */
-    #poem-clue {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: #d4af37;
-      text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
-      font-size: 22px;
-      line-height: 2;
-      font-family: 'Noto Serif TC', serif;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 2s;
-      width: 380px;
-      background: rgba(0,0,0,0.8);
-      padding: 20px;
-      border-radius: 10px;
-      border: 1px solid rgba(212, 175, 55, 0.4);
-    }
-    #poem-clue.visible {
-      opacity: 1;
-    }
+
 
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -384,14 +361,7 @@
         </g>
       </svg>
 
-      <div id="poem-clue">
-        <div style="font-size: 24px; font-weight: bold; margin-bottom: 15px;">墓碑已還原</div>
-        <div style="font-size: 18px; color: #a89a7f; line-height: 1.6;">
-          碑文浮現出一首絕句，道盡了落番客的一生。<br>
-          請仔細閱讀每一句的<span style="color: #fff;">「開頭第一個字」</span>。<br>
-          這四個數字，即是機關匣的密碼。
-        </div>
-      </div>
+
     </div>
   </div>
 
@@ -418,7 +388,6 @@
     const targetGroup = document.getElementById('target-group');
     const tombstoneText = document.getElementById('tombstone-text');
     const shardsGroup = document.getElementById('shards-group');
-    const poemClue = document.getElementById('poem-clue');
     const safeContainer = document.getElementById('safe-container');
     
     // Tombstone polygon definition
@@ -627,15 +596,10 @@
         tombstoneText.style.opacity = '1';
       }, 500);
 
-      // Show poem clue
-      setTimeout(() => {
-        poemClue.classList.add('visible');
-      }, 2000);
-
       // Enable safe
       setTimeout(() => {
         safeContainer.classList.add('active');
-      }, 4000);
+      }, 2000);
     }
 
     // --- Safe Logic ---
