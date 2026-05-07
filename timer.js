@@ -1,6 +1,6 @@
 // ksecret/timer.js
 
-const TOTAL_TIME = 720; // 12分鐘 (秒)
+const TOTAL_TIME = 600; // 10分鐘 (秒)
 const TEACHER_PASSWORD = "888"; // 預設教師密碼
 
 function initTimer() {
