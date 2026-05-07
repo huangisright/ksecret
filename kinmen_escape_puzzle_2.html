@@ -13,10 +13,10 @@
       background-image: linear-gradient(rgba(10, 6, 4, 0.7), rgba(10, 6, 4, 0.85)), url('bg_minnan_brick.png');
       background-size: cover;
       background-position: center;
+      background-attachment: fixed;
       color: #d4c4a8;
       font-family: 'Noto Serif TC', serif;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
@@ -296,6 +296,8 @@
       }
       .map-container {
         width: 100%;
+        height: auto;
+        aspect-ratio: 65 / 60;
       }
     }
   </style>
