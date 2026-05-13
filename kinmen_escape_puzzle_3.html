@@ -469,6 +469,28 @@
       g.setAttribute('transform', `translate(${x}, ${y}) rotate(${rot}, 150, 225)`);
     }
 
+    function clampPosition(g) {
+      const rect = svg.getBoundingClientRect();
+      let x = parseFloat(g.dataset.x);
+      let y = parseFloat(g.dataset.y);
+      
+      // Keep the center of the piece (x+150, y+225) within the visible SVG area
+      let centerX = x + 150;
+      let centerY = y + 225;
+      
+      // Allow 50px margin so it doesn't get completely lost
+      let minX = 50;
+      let maxX = Math.max(50, rect.width - 50);
+      let minY = 50;
+      let maxY = Math.max(50, rect.height - 50);
+      
+      centerX = Math.max(minX, Math.min(maxX, centerX));
+      centerY = Math.max(minY, Math.min(maxY, centerY));
+      
+      g.dataset.x = centerX - 150;
+      g.dataset.y = centerY - 225;
+    }
+
     let draggingElement = null;
     let dragStartX = 0;
     let dragStartY = 0;
@@ -521,6 +543,7 @@
       if (hasMoved) {
         draggingElement.dataset.x = initialX + dx;
         draggingElement.dataset.y = initialY + dy;
+        clampPosition(draggingElement);
         updateTransform(draggingElement);
       }
     });
@@ -539,6 +562,7 @@
       if (hasMoved) {
         draggingElement.dataset.x = initialX + dx;
         draggingElement.dataset.y = initialY + dy;
+        clampPosition(draggingElement);
         updateTransform(draggingElement);
       }
     }, {passive: false});
@@ -554,6 +578,7 @@
         let rot = parseInt(draggingElement.dataset.rot);
         rot = (rot + 90) % 360;
         draggingElement.dataset.rot = rot;
+        clampPosition(draggingElement);
         updateTransform(draggingElement);
       }
       
