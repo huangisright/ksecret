@@ -395,10 +395,10 @@
     // Center of bounding box is (150, 225)
     
     const shardDefs = [
-      { id: 1, points: "30,100 80,30 220,30 270,100 220,150 150,120 80,150" }, // Top
-      { id: 2, points: "30,100 80,150 150,120 100,250 180,350 150,450 30,450" }, // Left
-      { id: 3, points: "150,120 220,150 270,100 270,280 180,300 100,250" }, // Right-Top
-      { id: 4, points: "100,250 180,300 270,280 270,450 150,450 180,350" } // Right-Bottom
+      { id: 1, points: "30,100 80,30 220,30 270,100 220,150 150,120 80,150", cx: 150, cy: 90 }, // Top
+      { id: 2, points: "30,100 80,150 150,120 100,250 180,350 150,450 30,450", cx: 105, cy: 275 }, // Left
+      { id: 3, points: "150,120 220,150 270,100 270,280 180,300 100,250", cx: 185, cy: 200 }, // Right-Top
+      { id: 4, points: "100,250 180,300 270,280 270,450 150,450 180,350", cx: 185, cy: 350 } // Right-Bottom
     ];
 
     let snappedCount = 0;
@@ -444,6 +444,8 @@
         g.dataset.x = initX;
         g.dataset.y = initY;
         g.dataset.rot = initRot;
+        g.dataset.cx = def.cx;
+        g.dataset.cy = def.cy;
         g.dataset.snapped = 'false';
 
         g.appendChild(polygon);
@@ -465,18 +467,22 @@
       const x = parseFloat(g.dataset.x);
       const y = parseFloat(g.dataset.y);
       const rot = parseInt(g.dataset.rot);
-      // Translate to position, then rotate around the tombstone center (150, 225)
-      g.setAttribute('transform', `translate(${x}, ${y}) rotate(${rot}, 150, 225)`);
+      const cx = parseFloat(g.dataset.cx);
+      const cy = parseFloat(g.dataset.cy);
+      // Translate to position, then rotate around the piece's own local center (cx, cy)
+      g.setAttribute('transform', `translate(${x}, ${y}) rotate(${rot}, ${cx}, ${cy})`);
     }
 
     function clampPosition(g) {
       const rect = svg.getBoundingClientRect();
       let x = parseFloat(g.dataset.x);
       let y = parseFloat(g.dataset.y);
+      const cx = parseFloat(g.dataset.cx);
+      const cy = parseFloat(g.dataset.cy);
       
-      // Keep the center of the piece (x+150, y+225) within the visible SVG area
-      let centerX = x + 150;
-      let centerY = y + 225;
+      // The true center of this piece on the SVG canvas
+      let centerX = x + cx;
+      let centerY = y + cy;
       
       // Allow 50px margin so it doesn't get completely lost
       let minX = 50;
@@ -487,8 +493,8 @@
       centerX = Math.max(minX, Math.min(maxX, centerX));
       centerY = Math.max(minY, Math.min(maxY, centerY));
       
-      g.dataset.x = centerX - 150;
-      g.dataset.y = centerY - 225;
+      g.dataset.x = centerX - cx;
+      g.dataset.y = centerY - cy;
     }
 
     let draggingElement = null;
