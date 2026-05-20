@@ -74,20 +74,15 @@ function initTimer() {
 // 供各關卡呼叫：標記單一關卡過關
 window.markLevelCleared = function(level) {
   localStorage.setItem(`puzzle${level}Cleared`, 'true');
-  checkAllCleared();
 };
 
-// 檢查是否集滿三個通關紀錄
-function checkAllCleared() {
-  const p1 = localStorage.getItem('puzzle1Cleared') === 'true';
-  const p2 = localStorage.getItem('puzzle2Cleared') === 'true';
-  const p3 = localStorage.getItem('puzzle3Cleared') === 'true';
-  
-  if (p1 && p2 && p3 && localStorage.getItem('gameCompleted') !== 'true') {
+// 最終通關呼叫 (由主選單輸入最終密碼時觸發)
+window.markGameCompleted = function() {
+  if (localStorage.getItem('gameCompleted') !== 'true') {
     localStorage.setItem('gameCompleted', 'true');
     localStorage.setItem('gameEndTime', Date.now());
   }
-}
+};
 
 // 教師專用重置功能 (需輸入密碼)
 window.teacherResetGame = function() {

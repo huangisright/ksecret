@@ -188,14 +188,116 @@
       filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9));
     }
 
+    .final-lock-container {
+      margin-top: 40px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px dashed #8b7355;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      transition: all 0.5s;
+    }
+    
+    .final-lock-container.active {
+      border-color: #d4af37;
+      background: rgba(40, 30, 20, 0.9);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+    }
+    
+    .final-lock-container h2 {
+      color: #777;
+      margin-top: 0;
+      letter-spacing: 5px;
+      transition: color 0.5s;
+    }
+    
+    .final-lock-container.active h2 {
+      color: #d4af37;
+    }
+    
+    .password-inputs {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .password-inputs input {
+      width: 60px;
+      height: 80px;
+      background: #111;
+      border: 2px solid #333;
+      color: #fff;
+      font-size: 36px;
+      text-align: center;
+      border-radius: 8px;
+      font-family: 'Noto Serif TC', serif;
+      transition: all 0.3s;
+    }
+    
+    .final-lock-container.active .password-inputs input {
+      border-color: #d4af37;
+      background: #222;
+    }
+    
+    .final-lock-container.active .password-inputs input:focus {
+      outline: none;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+      background: #333;
+    }
+    
+    .final-unlock-btn {
+      background: #333;
+      color: #666;
+      border: none;
+      padding: 12px 40px;
+      font-size: 20px;
+      letter-spacing: 4px;
+      border-radius: 5px;
+      cursor: not-allowed;
+      transition: all 0.3s;
+    }
+    
+    .final-lock-container.active .final-unlock-btn {
+      background: linear-gradient(to bottom, #d4af37, #aa7c11);
+      color: #000;
+      cursor: pointer;
+    }
+    
+    .final-lock-container.active .final-unlock-btn:hover {
+      background: linear-gradient(to bottom, #f4cf57, #ca9c31);
+    }
+    
+    #final-msg {
+      margin-top: 15px;
+      height: 20px;
+      font-size: 16px;
+      color: #ff5555;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+    .shake-error {
+      animation: shake 0.4s ease-in-out;
+    }
+
     @media (max-width: 768px) {
       .container { padding: 20px; }
       h1 { font-size: 32px; letter-spacing: 4px; margin-bottom: 10px; }
       p.subtitle { font-size: 16px; margin-bottom: 30px; letter-spacing: 2px; }
       .level-title { font-size: 24px; }
       .level-card { padding: 20px 25px; }
+      .password-inputs input { width: 50px; height: 65px; font-size: 28px; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -244,8 +346,54 @@
 
     </div>
 
+    <!-- Final Lock Container -->
+    <div class="final-lock-container" id="final-lock">
+      <h2>最終機關匣</h2>
+      <p style="color: #bfae91; margin-bottom: 20px;">集齊三把鑰匙字，解開傳承百年的歷史記憶</p>
+      <div class="password-inputs">
+        <input type="text" id="final-key" placeholder="🔒" disabled style="width: 250px; letter-spacing: 5px;">
+      </div>
+      <button class="final-unlock-btn" id="final-btn" onclick="checkFinalPassword()" disabled>解開機關</button>
+      <div id="final-msg"></div>
+    </div>
     <div class="logo-container">
       <img src="logo.png" alt="KCJH Gifted" class="class-logo">
+    </div>
+  </div>
+
+  <!-- Final Victory Overlay -->
+  <div id="final-victory-overlay" style="
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 6, 4, 0.95); z-index: 1000;
+      display: none; flex-direction: column; align-items: center;
+      justify-content: center; color: #d4af37; text-align: center;
+      overflow-y: auto; padding: 20px;">
+    <div class="anim-container" style="display: flex; flex-direction: column; align-items: center; max-width: 800px; margin: auto;">
+      <h1 style="font-size: 48px; margin-bottom: 20px; text-shadow: 0 0 20px #d4af37; letter-spacing: 4px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap;">
+        全系列通關！
+        <div class="seal-stamp" style="
+          width: 60px; height: 60px; border: 3px solid #c83232;
+          color: #c83232; font-family: 'Kaiti TC', 'DFKai-sb', serif; font-size: 20px;
+          font-weight: bold; display: flex; align-items: center; justify-content: center; border-radius: 6px; transform: rotate(15deg);
+          letter-spacing: 2px; box-shadow: inset 0 0 5px rgba(200,50,50,0.5), 0 0 5px rgba(200,50,50,0.5);
+          background: radial-gradient(circle, rgba(255,255,255,0.9) 20%, rgba(200,50,50,0.1) 80%);
+          margin-left: 20px;">破關</div>
+      </h1>
+      <p style="font-size: 22px; max-width: 600px; line-height: 1.8; color: #e8d5a6;">
+        「落」、「番」、「客」三字合一，機關匣應聲開啟。<br>裡面放著一本寫滿南洋貿易路線的古老帳冊，以及一封家書的下半部。
+      </p>
+      <p style="font-size: 20px; max-width: 600px; line-height: 1.8; color: #e8d5a6;">
+        透過閩南建築、落番航海與三寶山古墓的線索，你成功還原了金門先輩「落番」的血淚史。<br>這份歷史記憶，將由你繼續傳承下去。
+      </p>
+      
+      <div style="margin: 30px 0; max-width: 600px; padding: 15px 30px; border: 1px solid #8b7355; border-radius: 10px; background: rgba(139, 115, 85, 0.2); text-align: left;">
+        <p style="margin: 0; font-size: 16px; color: #e8d5a6; line-height: 1.8;">
+          📜 <b>【落番史實小百科】</b><br>
+          馬來西亞「<span style="color: #ffcc00; font-weight: bold;">麻六甲</span>」的「<span style="color: #ffcc00; font-weight: bold;">三寶山</span>」，是目前中國境外最大、歷史最悠久的華人傳統墓地。這裡安息了無數未能「落葉歸根」的金門與閩南先輩，是見證華人移民南洋百年滄桑的珍貴世界遺產。而那些成功寄回僑匯建起的「<span style="color: #ffcc00; font-weight: bold;">番仔樓</span>」與「<span style="color: #ffcc00; font-weight: bold;">閩南大厝</span>」，更是出洋客對故鄉無盡思念的化身。
+        </p>
+      </div>
+
+      <button style="margin-top: 20px; background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 12px 40px; font-size: 20px; cursor: pointer; border-radius: 5px; transition: all 0.3s; letter-spacing: 2px;" onmouseover="this.style.background='#d4af37'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#d4af37'" onclick="teacherResetGame()">重置遊戲</button>
     </div>
   </div>
 
@@ -260,18 +408,48 @@
       if (p2) document.getElementById('card-2').classList.add('cleared');
       if (p3) document.getElementById('card-3').classList.add('cleared');
 
-      // Sequential lock logic
-      if (!p1) {
-        const card2 = document.getElementById('card-2');
-        card2.classList.add('locked');
-        card2.href = 'javascript:void(0)';
-      }
-      if (!p2) {
-        const card3 = document.getElementById('card-3');
-        card3.classList.add('locked');
-        card3.href = 'javascript:void(0)';
+      // Check if all 3 puzzles are cleared
+      if (p1 && p2 && p3) {
+        const finalLock = document.getElementById('final-lock');
+        finalLock.classList.add('active');
+        
+        const finalInput = document.getElementById('final-key');
+        finalInput.disabled = false;
+        finalInput.placeholder = "輸入密碼";
+        
+        document.getElementById('final-btn').disabled = false;
       }
     });
+
+    function checkFinalPassword() {
+      const pwd = document.getElementById('final-key').value.trim();
+      
+      const msg = document.getElementById('final-msg');
+      if (pwd === '落番客') {
+        msg.style.color = '#4CAF50';
+        msg.innerText = "密碼正確！";
+        // 標記最終通關，停止計時
+        if (typeof window.markGameCompleted === 'function') window.markGameCompleted();
+        
+        setTimeout(() => {
+          document.getElementById('final-victory-overlay').style.display = 'flex';
+          if (typeof confetti === 'function') {
+            confetti({
+              particleCount: 150,
+              spread: 100,
+              origin: { y: 0.6 }
+            });
+          }
+        }, 800);
+      } else {
+        msg.style.color = '#ff5555';
+        msg.innerText = "鑰匙不正確，機關無反應。";
+        const lock = document.getElementById('final-lock');
+        lock.classList.remove('shake-error');
+        void lock.offsetWidth; // trigger reflow
+        lock.classList.add('shake-error');
+      }
+    }
   </script>
 </body>
 </html>
